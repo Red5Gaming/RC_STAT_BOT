@@ -1,30 +1,12 @@
+// https://discord.com/api/oauth2/authorize?client_id=1032693370348371979&permissions=274878172224&scope=bot%20applications.commands
+
 const fs = require('fs');
 const {Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const {token, guildId} = require('./config.json');
-const {QuickDB} = require("quick.db");
 
-const db = new QuickDB();
-const filterList = db.table("filterList");
 
-// const { en } = require('./languages/en.json');
 
-let en = require('./languages/en.json');
-
-console.log(en['ping']);
-
-const client = new Client({
-    intents: [
-        GatewayIntentBits.DirectMessages,
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildBans,
-        GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.GuildMembers,
-        GatewayIntentBits.MessageContent,
-        GatewayIntentBits.DirectMessages,
-        GatewayIntentBits.GuildVoiceStates,
-    ],
-    partials: [Partials.Channel],
-});
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 
 client.commands = new Collection();
