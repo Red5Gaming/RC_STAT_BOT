@@ -225,7 +225,18 @@ module.exports = {
             let exoticdistance = getStat('performanceDistanceGamemode.gamemodeid.Exotic')
             let quickmatchdistance = getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')
             let rankeddistance = getStat('performanceDistanceGamemode.gamemodeid.Ranked')
-            let calculateddistance = Number(exoticdistance) + Number(quickmatchdistance) + Number(rankeddistance)
+            let calculateddistance = Number(exoticdistance) || 0 + Number(quickmatchdistance) || 0 + Number(rankeddistance) || 0
+
+            console.log(distance)
+            console.log(exoticdistance)
+            console.log(quickmatchdistance)
+            console.log(rankeddistance)
+            console.log(calculateddistance)
+
+
+
+
+
 
             // 1 / 0 stats
             let onetozeroexotic = getStat('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0')
@@ -395,7 +406,7 @@ module.exports = {
                     {name: "Time played in QM", value: timeQuickMatch, inline: true},
                     {name: "Mates grabbed in QM", value: mategrabsinquickmatch, inline: true},
                     {name: "Gates activated in QM", value: gatesinquickmatch, inline: true},
-                    {name: "Distance travelled in QM", value: quickmatchdistance / 1000 + " km", inline: true},
+                    {name: "Distance travelled in QM", value: (quickmatchdistance / 1000).toFixed(2) + " km", inline: true},
                     {name: "Emotes used in QM", value: emotesinquickmatch, inline: true},
                 )
 
