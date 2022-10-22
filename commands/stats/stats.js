@@ -421,7 +421,7 @@ module.exports = {
                 )
 
 
-            // reformat the totaltime variable from seconds to hours, and then 2 decimal places
+
             totaltime = totaltime / 60 / 60
             totaltime = totaltime.toFixed(2)
 
@@ -449,7 +449,7 @@ module.exports = {
                     {name: "Time played in Exotic", value: (timeExotic).toString() + "hrs", inline: true},
                 )
 
-            // condition ? value if true : value if false
+
 
             const page6 = new EmbedBuilder()
                 .setTitle('Distances Travelled')
@@ -466,7 +466,6 @@ module.exports = {
                         value: (calculateddistance / 1000).toFixed(2).toString() + " km",
                         inline: true
                     },
-                    // do the line above, but rewrite it so that if the calculation returns NaN, it will return 0 instead
 
 
                     {
@@ -561,7 +560,6 @@ module.exports = {
                 )
 
 
-// await interaction.reply({embeds: [page0]})
 
             let pages = [page0, page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
 
