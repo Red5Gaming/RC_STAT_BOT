@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 
 
@@ -24,7 +24,7 @@ module.exports = {
                     {name: 'Xbox', value: 'xbl'},
                     {name: 'Nintendo Switch', value: 'switch'},
                 )
-         )
+        )
 
     ,
     async execute(interaction) {
@@ -106,7 +106,6 @@ module.exports = {
             // console.log(stato['MatchResult.endreason.Win'].value);
 
 
-
             function getStat(stat) {
 
                 // console.log(stat)
@@ -134,8 +133,6 @@ module.exports = {
             // console.log(stato['MatchPlayed'].value);
 
             // let totalwins = stato['MatchResult.endreason.Win'].value
-
-
 
 
             // times
@@ -268,9 +265,9 @@ module.exports = {
             let totalwins = getStat('MatchResult.endreason.Win')
             let toaldraws = getStat('MatchResult.endreason.Draw')
             let totalLost = getStat('MatchResult.endreason.Lost')
-                let winpercentage = Number(totalwins) / Number(totalmatches) * 100
-                let losspercentage = Number(totalLost) / Number(totalmatches) * 100
-                let drawpercentage = Number(toaldraws) / Number(totalmatches) * 100
+            let winpercentage = Number(totalwins) / Number(totalmatches) * 100
+            let losspercentage = Number(totalLost) / Number(totalmatches) * 100
+            let drawpercentage = Number(toaldraws) / Number(totalmatches) * 100
             let calculatedlosses = (Number(totalmatches) - Number(totalwins) - Number(toaldraws)).toString()
 
             // exotic outcomes
@@ -293,18 +290,23 @@ module.exports = {
             let cosmeticAmount = getStat('progressionCollection')
 
 
-
-
             const page0 = new EmbedBuilder()
                 .setTitle('RC Stat Bot')
                 .setURL('https://example.org/')
                 .setDescription('This bot allows you to view the stats of any player on any platform, right here in discord.')
-                .addFields({name: 'How does this work❓', value: 'Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'})
-                .addFields({name: '❗Disclaimer❗', value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'})
-                .addFields({name: 'The project💻', value: "This project is open source under the Mozilla 2.0 license. You can find the source code by clicking the title of this message."})
+                .addFields({
+                    name: 'How does this work❓',
+                    value: 'Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
+                })
+                .addFields({
+                    name: '❗Disclaimer❗',
+                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'
+                })
+                .addFields({
+                    name: 'The project💻',
+                    value: "This project is open source under the Mozilla 2.0 license. You can find the source code by clicking the title of this message."
+                })
                 .setColor('#FF1653')
-
-
 
 
             // every page is 3x4 fields
@@ -317,13 +319,37 @@ module.exports = {
                     {name: "Total Wins", value: totalwins, inline: true},
                     {name: "Win Percentage (All gamemodes)", value: winpercentage.toFixed(2) + '%', inline: true},
                     {name: "Total Losses", value: calculatedlosses, inline: true},
-                    {name: "Total passes", value: `Calculated passes: ${calculatedPasses} \n Global passes: ${globalPasses}`, inline: true},
-                    {name: "Total tackles", value: `Calculated tackles: ${calculatedtackles} \n Global tackles: ${globaltackles}`, inline: true},
-                    {name: "Total stuns (getting tackled)", value: `Calculated stuns: ${calculatedstuns} \n Global stuns: ${globalstuns}`, inline: true},
-                    {name: "Total 1pt goals", value: `Calculated 1pt goals: ${calculated1ptgoals} \n Global 1pt goals: ${global1ptgoals}`, inline: true},
-                    {name: "Total 2pt goals", value: `Calculated 2pt goals: ${calculated3ptgoals} \n Global 2pt goals: ${global3ptgoals}`, inline: true},
-                    {name: "Total 5pt goals", value: `Calculated 5pt goals: ${calculated5ptgoals} \n Global 5pt goals: ${global5ptgoals}`, inline: true},
-                    )
+                    {
+                        name: "Total passes",
+                        value: `Calculated passes: ${calculatedPasses} \n Global passes: ${globalPasses}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total tackles",
+                        value: `Calculated tackles: ${calculatedtackles} \n Global tackles: ${globaltackles}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total stuns (getting tackled)",
+                        value: `Calculated stuns: ${calculatedstuns} \n Global stuns: ${globalstuns}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 1pt goals",
+                        value: `Calculated 1pt goals: ${calculated1ptgoals} \n Global 1pt goals: ${global1ptgoals}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 2pt goals",
+                        value: `Calculated 2pt goals: ${calculated3ptgoals} \n Global 2pt goals: ${global3ptgoals}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 5pt goals",
+                        value: `Calculated 5pt goals: ${calculated5ptgoals} \n Global 5pt goals: ${global5ptgoals}`,
+                        inline: true
+                    },
+                )
                 .setColor('#FF1653')
 
 
@@ -344,7 +370,11 @@ module.exports = {
                     {name: "Time played in ranked", value: timeRanked, inline: true},
                     {name: "Mates grabbed in ranked", value: mategrabsinranked, inline: true},
                     {name: "Gates activated in ranked", value: gatesinranked, inline: true},
-                    {name: "Distance travelled in ranked", value: (rankeddistance / 1000).toFixed(2) + " km", inline: true},
+                    {
+                        name: "Distance travelled in ranked",
+                        value: (rankeddistance / 1000).toFixed(2) + " km",
+                        inline: true
+                    },
                     {name: "Emotes used in ranked", value: emotesinranked, inline: true},
                 )
 
@@ -408,10 +438,6 @@ module.exports = {
             timeExotic = timeExotic.toFixed(2)
 
 
-
-
-
-
             const page5 = new EmbedBuilder()
                 .setTitle('Times Played')
                 .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
@@ -429,16 +455,35 @@ module.exports = {
                 .setTitle('Distances Travelled')
                 .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
                 .addFields(
-                    {name: "Total distance travelled", value: (distance / 1000).toFixed(2).toString() + " km", inline: true},
+                    {
+                        name: "Total distance travelled",
+                        value: (distance / 1000).toFixed(2).toString() + " km",
+                        inline: true
+                    },
 
-                    {name: "Calculated distance travelled", value: (calculateddistance / 1000).toFixed(2).toString() + " km", inline: true},
+                    {
+                        name: "Calculated distance travelled",
+                        value: (calculateddistance / 1000).toFixed(2).toString() + " km",
+                        inline: true
+                    },
                     // do the line above, but rewrite it so that if the calculation returns NaN, it will return 0 instead
 
 
-                    {name: "Distance travelled in ranked", value: (rankeddistance / 1000).toFixed(2) + " km", inline: true},
-                    {name: "Distance travelled in QM", value: (quickmatchdistance / 1000).toFixed(2) + " km", inline: true},
-                    {name: "Distance travelled in Exotic", value: (exoticdistance / 1000).toFixed(2) + " km", inline: true},
-
+                    {
+                        name: "Distance travelled in ranked",
+                        value: (rankeddistance / 1000).toFixed(2) + " km",
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in QM",
+                        value: (quickmatchdistance / 1000).toFixed(2) + " km",
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in Exotic",
+                        value: (exoticdistance / 1000).toFixed(2) + " km",
+                        inline: true
+                    },
                 )
 
 
@@ -457,7 +502,6 @@ module.exports = {
                     {name: "Total emotes", value: emotes.toString(), inline: true},
                     {name: "Calculated emotes", value: calculatedemotes.toString(), inline: true},
                 )
-
 
 
             const page8 = new EmbedBuilder()
@@ -500,7 +544,11 @@ module.exports = {
                 .addFields(
                     {name: "Total games played in Arena 8", value: arenaeightPlayed.toString(), inline: true},
                     {name: "Total games played in Acapulco", value: acapulcoPlayed.toString(), inline: true},
-                    {name: "Total games played in Acapulco 2v2", value: acapulcoPlayed2v2Played.toString(), inline: true},
+                    {
+                        name: "Total games played in Acapulco 2v2",
+                        value: acapulcoPlayed2v2Played.toString(),
+                        inline: true
+                    },
                     {name: "Total games played in Skatepark", value: acapulcoSkateparkPlayed.toString(), inline: true},
                     {name: "Total games played in Bangkok", value: bangkokPlayed.toString(), inline: true},
                     {name: "Total games played in Brooklyn", value: brooklynPlayed.toString(), inline: true},
@@ -510,10 +558,7 @@ module.exports = {
                     {name: "Total games played in Mexico", value: mexicoPlayed.toString(), inline: true},
                     {name: "Total games played in Staten Island", value: statenislandPlayed.toString(), inline: true},
                     {name: "Total games played in Venice Beach", value: venicebeachPlayed.toString(), inline: true},
-
                 )
-
-
 
 
 // await interaction.reply({embeds: [page0]})
@@ -522,26 +567,26 @@ module.exports = {
 
             const buttons = [
                 {label: 'first', emoji: '⏪', style: ButtonStyle.Secondary},
-                { label: 'Previous', emoji: '⬅', style: ButtonStyle.Danger },
-                { label: 'Next', emoji: '➡', style: ButtonStyle.Success },
-                { label: 'Last', emoji: '⏩', style: ButtonStyle.Secondary },
+                {label: 'Previous', emoji: '⬅', style: ButtonStyle.Danger},
+                {label: 'Next', emoji: '➡', style: ButtonStyle.Success},
+                {label: 'Last', emoji: '⏩', style: ButtonStyle.Secondary},
             ]
 
             await new Pagination({secondaryUserText: "Hey! You did not request this!", timeout: 300000})
                 .setCommand(interaction)
                 .setPages(pages)
                 .setButtons(buttons)
-                .setSelectMenu({ enable: true })
-                .setFooter({ enable: true })
+                .setSelectMenu({enable: true})
+                .setFooter({enable: true})
                 .send();
 
 
-
-
-
         } catch (error) {
-                console.log(error);
-                await interaction.reply({content: 'User does not exist or have a profile on this platform.', ephemeral: true});
+            console.log(error);
+            await interaction.reply({
+                content: 'User does not exist or have a profile on this platform.',
+                ephemeral: true
+            });
         }
         // end try / catch
 
