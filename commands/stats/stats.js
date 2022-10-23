@@ -137,7 +137,7 @@ module.exports = {
 
 
             // times
-            let totaltime = Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic'))
+            let totaltime = Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) || 0 + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) || 0 + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) || 0
             let reportedtime = Number(getStat('playtimeAbsolute')) // time reported by ubi, somehow capped at ~80 hours
             let timeExotic = getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')
             let timeRanked = getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')
@@ -148,21 +148,21 @@ module.exports = {
             let dodgesinexotic = getStat('performanceDodgeGamemode.gamemodeid.Exotic')
             let dodgesinquickmatch = getStat('performanceDodgeGamemode.gamemodeid.QuickMatch')
             let dodgesinranked = getStat('performanceDodgeGamemode.gamemodeid.Ranked')
-            let calculatedtotaldodges = Number(dodgesinexotic) + Number(dodgesinquickmatch) + Number(dodgesinranked)
+            let calculatedtotaldodges = Number(dodgesinexotic) || 0 + Number(dodgesinquickmatch) || 0 + Number(dodgesinranked) || 0
 
             // emotes
             let emotes = getStat('performanceEmote')
             let emotesinexotic = getStat('performanceEmoteGamemode.gamemodeid.Exotic')
             let emotesinquickmatch = getStat('performanceEmoteGamemode.gamemodeid.QuickMatch')
             let emotesinranked = getStat('performanceEmoteGamemode.gamemodeid.Ranked')
-            let calculatedemotes = Number(emotesinexotic) + Number(emotesinquickmatch) + Number(emotesinranked)
+            let calculatedemotes = Number(emotesinexotic) || 0 + Number(emotesinquickmatch) || 0 + Number(emotesinranked) || 0
 
             // gates
             let gates = getStat('progressionGatesGlobal')
             let gatesinexotic = getStat('performanceGatesGamemode.gamemodeid.Exotic')
             let gatesinquickmatch = getStat('performanceGatesGamemode.gamemodeid.QuickMatch')
             let gatesinranked = getStat('performanceGatesGamemode.gamemodeid.Ranked')
-            let calculatedgates = Number(gatesinexotic) + Number(gatesinquickmatch) + Number(gatesinranked)
+            let calculatedgates = Number(gatesinexotic) || 0 + Number(gatesinquickmatch) || 0 + Number(gatesinranked) || 0
 
             // all goals
             let reportedgoals = getStat('progressionGoalsGlobal')
@@ -172,21 +172,21 @@ module.exports = {
             let exotic1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.Ranked')
-            let calculated1ptgoals = Number(exotic1ptgoals) + Number(quickmatch1ptgoals) + Number(ranked1ptgoals)
+            let calculated1ptgoals = Number(exotic1ptgoals) || 0 + Number(quickmatch1ptgoals) || 0 + Number(ranked1ptgoals) || 0
 
             // 3pt goals
             let global3ptgoals = getStat('progression3ptGoalGlobal')
             let exotic3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.Ranked')
-            let calculated3ptgoals = Number(exotic3ptgoals) + Number(quickmatch3ptgoals) + Number(ranked3ptgoals)
+            let calculated3ptgoals = Number(exotic3ptgoals) || 0 + Number(quickmatch3ptgoals) || 0 + Number(ranked3ptgoals) || 0
 
             // 5pt goals
             let global5ptgoals = getStat('progression5ptGoalGlobal')
             let exotic5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.Ranked')
-            let calculated5ptgoals = Number(exotic5ptgoals) + Number(quickmatch5ptgoals) + Number(ranked5ptgoals)
+            let calculated5ptgoals = Number(exotic5ptgoals) || 0 + Number(quickmatch5ptgoals) || 0 + Number(ranked5ptgoals) || 0
 
             let percentage1pt = (calculated1ptgoals / reportedgoals) * 100
             let percentage3pt = (calculated3ptgoals / reportedgoals) * 100
@@ -198,34 +198,34 @@ module.exports = {
             let mategrabsinexotic = getStat('performanceGrabGamemode.gamemodeid.Exotic')
             let mategrabsinquickmatch = getStat('performanceGrabGamemode.gamemodeid.QuickMatch')
             let mategrabsinranked = getStat('performanceGrabGamemode.gamemodeid.Ranked')
-            let calculatedmategrabs = Number(mategrabsinexotic) + Number(mategrabsinquickmatch) + Number(mategrabsinranked)
+            let calculatedmategrabs = Number(mategrabsinexotic) || 0 + Number(mategrabsinquickmatch) || 0 + Number(mategrabsinranked) || 0
 
             // passes
             let globalPasses = getStat('progressionPassGlobal')
             let quickmatchPasses = getStat('performancePassGamemode.gamemodeid.QuickMatch')
             let rankedPasses = getStat('performancePassGamemode.gamemodeid.Ranked')
             let exoticPasses = getStat('performancePassGamemode.gamemodeid.Exotic')
-            let calculatedPasses = Number(quickmatchPasses) + Number(rankedPasses) + Number(exoticPasses)
+            let calculatedPasses = Number(quickmatchPasses) || 0 + Number(rankedPasses) || 0 + Number(exoticPasses) || 0
 
             // stuns
             let globalstuns = getStat('performanceStun')
             let quickmatchstuns = getStat('performanceStunGamemode.gamemodeid.QuickMatch')
             let rankedstuns = getStat('performanceStunGamemode.gamemodeid.Ranked')
             let exoticstuns = getStat('performanceStunGamemode.gamemodeid.Exotic')
-            let calculatedstuns = Number(quickmatchstuns) + Number(rankedstuns) + Number(exoticstuns)
+            let calculatedstuns = Number(quickmatchstuns) || 0 + Number(rankedstuns) || 0 + Number(exoticstuns) || 0
 
             // tackles
             let globaltackles = getStat('progressionTacklesGlobal')
             let quickmatchtackles = getStat('performanceTacklesGamemode.gamemodeid.QuickMatch')
             let rankedtackles = getStat('performanceTacklesGamemode.gamemodeid.Ranked')
             let exotictackles = getStat('performanceTacklesGamemode.gamemodeid.Exotic')
-            let calculatedtackles = Number(quickmatchtackles) + Number(rankedtackles) + Number(exotictackles)
+            let calculatedtackles = Number(quickmatchtackles) || 0 + Number(rankedtackles) || 0 + Number(exotictackles) || 0
 
             // distances
             let distance = getStat('progressionDistanceGlobal')
             let exoticdistance = getStat('performanceDistanceGamemode.gamemodeid.Exotic')
             let quickmatchdistance = getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')
-            let rankeddistance = getStat('performanceDistanceGamemode.gamemodeid.Ranked')
+            let rankeddistance = getStat('performanceDistanceGamemode.gamemodeid.Ranked') || 0
             let calculateddistance = Number(exoticdistance) || 0 + Number(quickmatchdistance) || 0 + Number(rankeddistance) || 0
 
             console.log(distance)
@@ -233,10 +233,6 @@ module.exports = {
             console.log(quickmatchdistance)
             console.log(rankeddistance)
             console.log(calculateddistance)
-
-
-
-
 
 
             // 1 / 0 stats
@@ -300,6 +296,11 @@ module.exports = {
 
             // cosmetics
             let cosmeticAmount = getStat('progressionCollection')
+
+
+            function buildfield(variable) {
+                return (variable === 'N/A' ? "0" : variable)
+            }
 
 
             const page0 = new EmbedBuilder()
@@ -384,7 +385,7 @@ module.exports = {
                     {name: "Gates activated in ranked", value: gatesinranked, inline: true},
                     {
                         name: "Distance travelled in ranked",
-                        value: (rankeddistance / 1000).toFixed(2) + " km",
+                        value: (rankeddistance == 'N/A' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
                         inline: true
                     },
                     {name: "Emotes used in ranked", value: emotesinranked, inline: true},
@@ -407,7 +408,11 @@ module.exports = {
                     {name: "Time played in QM", value: timeQuickMatch, inline: true},
                     {name: "Mates grabbed in QM", value: mategrabsinquickmatch, inline: true},
                     {name: "Gates activated in QM", value: gatesinquickmatch, inline: true},
-                    {name: "Distance travelled in QM", value: (quickmatchdistance / 1000).toFixed(2) + " km", inline: true},
+                    {
+                        name: "Distance travelled in QM",
+                        value: (quickmatchdistance / 1000).toFixed(2) + " km",
+                        inline: true
+                    },
                     {name: "Emotes used in QM", value: emotesinquickmatch, inline: true},
                 )
 
@@ -431,7 +436,6 @@ module.exports = {
                     {name: "Distance travelled in Exotic", value: exoticdistance / 1000 + " km", inline: true},
                     {name: "Emotes used in Exotic", value: emotesinexotic, inline: true},
                 )
-
 
 
             totaltime = totaltime / 60 / 60
@@ -460,7 +464,6 @@ module.exports = {
                     {name: "Time played in QM", value: (timeQuickMatch).toString() + "hrs", inline: true},
                     {name: "Time played in Exotic", value: (timeExotic).toString() + "hrs", inline: true},
                 )
-
 
 
             const page6 = new EmbedBuilder()
