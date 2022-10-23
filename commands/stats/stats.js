@@ -38,6 +38,7 @@ module.exports = {
         try {
 
 
+            // TODO: Only create a new ticket every 3 hours
             const options1 = {
                 hostname: 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
 
@@ -569,7 +570,6 @@ module.exports = {
                     {name: "Total games played in Staten Island", value: statenislandPlayed.toString(), inline: true},
                     {name: "Total games played in Venice Beach", value: venicebeachPlayed.toString(), inline: true},
                 )
-
 
 
             let pages = [page0, page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]

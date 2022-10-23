@@ -1,5 +1,5 @@
-const { QuickDB } = require("quick.db");
-const db = new QuickDB();
+//const { QuickDB } = require("quick.db");
+//const db = new QuickDB();
 
 module.exports = {
     name: 'guildMemberAdd',
