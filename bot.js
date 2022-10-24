@@ -5,44 +5,37 @@ const {Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const {token, guildId} = require('./config.json');
 
 
+const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
-
-
+// command handler with sub-folders
 client.commands = new Collection();
-const commandFolders = fs.readdirSync('./commands'); // Name this as yours Command Folder name
+const commandFolders = fs.readdirSync('./commands');
 
-for (const folder of commandFolders) // this loop will retrieve all subfolders
+for (const folder of commandFolders)
 {
 
     const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js')); // Retrieve the cmd files inside subfolders
 
-    for (const file of commandFiles) // this loop will retrieve all command files
+    for (const file of commandFiles)
     {
         const command = require(`./commands/${folder}/${file}`);
-        client.commands.set(command.data.name, command) // i use client. idk if you using bot or this.
-        // console.log(`${command.data.name} is loaded`)
+        client.commands.set(command.data.name, command)
+        console.log(`${command.data.name} is loaded`)
     }
 
 }
-
-
-//Event File constante, gibt liste mit allen commands eg. ["ready.js", "interactionCreate.js"]
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'))
 
-//geht über die Liste
+// event handler
 for (const file of eventFiles) {
     const event = require(`./events/${file}`);
     if (event.once) {
-        //      ↓   wenn setting once:true führt es nur einmal aus
         client.once(event.name, (...args) => event.execute(...args))
     } else {
-        //     ↓   wenn setting once:false führt es dauerhaft (?) aus
         client.on(event.name, (...args) => event.execute(...args))
     }
 }
 
 
 
-//login mit dem token, obviously, duh
 client.login(token);

@@ -119,21 +119,8 @@ module.exports = {
                     return "N/A";
                 }
 
-                // return stato[stat].value;
-
 
             }
-
-            // getStat('performanceDodge')
-
-            // console.log(getStat('performanceDodge'))
-
-            // create a function called "getStat" that takes a string as an argument and return the value of the stat
-
-            // console.log(getStat('MatchPlayed'))
-            // console.log(stato['MatchPlayed'].value);
-
-            // let totalwins = stato['MatchResult.endreason.Win'].value
 
 
             // times
@@ -225,14 +212,14 @@ module.exports = {
             let distance = getStat('progressionDistanceGlobal')
             let exoticdistance = getStat('performanceDistanceGamemode.gamemodeid.Exotic')
             let quickmatchdistance = getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')
-            let rankeddistance = getStat('performanceDistanceGamemode.gamemodeid.Ranked') || 0
+            let rankeddistance = getStat('performanceDistanceGamemode.gamemodeid.Ranked')
             let calculateddistance = Number(exoticdistance) || 0 + Number(quickmatchdistance) || 0 + Number(rankeddistance) || 0
 
-            console.log(distance)
-            console.log(exoticdistance)
-            console.log(quickmatchdistance)
-            console.log(rankeddistance)
-            console.log(calculateddistance)
+            // console.log(distance)
+            // console.log(exoticdistance)
+            // console.log(quickmatchdistance)
+            // console.log(rankeddistance)
+            // console.log(calculateddistance)
 
 
             // 1 / 0 stats
@@ -297,10 +284,20 @@ module.exports = {
             // cosmetics
             let cosmeticAmount = getStat('progressionCollection')
 
-
-            function buildfield(variable) {
-                return (variable === 'N/A' ? "0" : variable)
+// function to get a stat value, and devide whether use N/A or 0, requires getStat function
+            function buildfieldVar(variable, leavezero) {
+                if(variable == "N/A" && leavezero == true) {
+                    return "0"
+                } else if(variable == "N/A" && leavezero == false) {
+                    return "N/A"
+                } else if(variable !== "N/A") {
+                    return variable
+                }
             }
+
+
+            console.log(buildfieldVar(rankeddistance, true))
+
 
 
             const page0 = new EmbedBuilder()
@@ -326,10 +323,10 @@ module.exports = {
             const page1 = new EmbedBuilder()
                 .setTitle('Important Stats')
                 .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
-                .addFields({name: "MMR", value: mmr, inline: true},
-                    {name: "Total Fans", value: totalFans, inline: true},
-                    {name: "Total Matches", value: totalmatches, inline: true},
-                    {name: "Total Wins", value: totalwins, inline: true},
+                .addFields({name: "MMR", value: buildfieldVar(mmr, true), inline: true},
+                    {name: "Total Fans", value: buildfieldVar(totalFans, false), inline: true},
+                    {name: "Total Matches", value: buildfieldVar(totalmatches, true), inline: true},
+                    {name: "Total Wins", value: buildfieldVar(totalwins, true), inline: true},
                     {name: "Win Percentage (All gamemodes)", value: winpercentage.toFixed(2) + '%', inline: true},
                     {name: "Total Losses", value: calculatedlosses, inline: true},
                     {
