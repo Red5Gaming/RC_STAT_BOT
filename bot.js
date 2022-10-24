@@ -11,13 +11,11 @@ const client = new Client({intents: [GatewayIntentBits.Guilds]});
 client.commands = new Collection();
 const commandFolders = fs.readdirSync('./commands');
 
-for (const folder of commandFolders)
-{
+for (const folder of commandFolders) {
 
     const commandFiles = fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith('.js')); // Retrieve the cmd files inside subfolders
 
-    for (const file of commandFiles)
-    {
+    for (const file of commandFiles) {
         const command = require(`./commands/${folder}/${file}`);
         client.commands.set(command.data.name, command)
         console.log(`${command.data.name} is loaded`)
@@ -35,7 +33,6 @@ for (const file of eventFiles) {
         client.on(event.name, (...args) => event.execute(...args))
     }
 }
-
 
 
 client.login(token);
