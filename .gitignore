@@ -118,3 +118,6 @@ run/
 config.json
 mysql.json
 node_modules
+
+# DB Files
+json.sqlite

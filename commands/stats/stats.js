@@ -1,14 +1,14 @@
 const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 
-
 const Pagination = require('customizable-discordjs-pagination');
 
 const superagent = require('superagent');
 
 const config = require('../../config.json');
 
-let { statreq } = require('../../utils/requestHandler.js')
+const req = require('../../utils/requestHandler.js')
+
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -39,76 +39,7 @@ module.exports = {
 
         try {
 
-            let statObject = statreq.returnStatObject(name, platform);
-
-
-            // TODO: Only create a new ticket every 3 hours
-            // const options1 = {
-            //     hostname: 'https://public-ubiservices.ubi.com/v3/profiles/sessions',
-            //
-            //     headers: {
-            //         'Ubi-AppId': 'f35adcb5-1911-440c-b1c9-48fdc1701c68',
-            //         'Ubi-RequestedPlatformType': "uplay",
-            //         'Content-Type': 'application/json',
-            //         'Authorization': config.ubiauth
-            //     }
-            // }
-            //
-            // const response = await superagent
-            //     .post(options1.hostname)
-            //     .set(options1.headers)
-            //
-            // // console.log(response.body)
-            //
-            // let ticketId = response.body.ticket;
-            // console.log("Spaceid" + response.body.spaceId)
-            //
-            // const options2 = {
-            //     hostname: 'https://public-ubiservices.ubi.com/v3/profiles',
-            //     query: {
-            //         'nameOnPlatform': name,
-            //         'platformType': platform
-            //     },
-            //     headers: {
-            //         'Authorization': `ubi_v1 t=${ticketId}`,
-            //         'Ubi-AppId': 'f35adcb5-1911-440c-b1c9-48fdc1701c68',
-            //     }
-            // }
-            //
-            //
-            // const response2 = await superagent
-            //     .get(options2.hostname)
-            //     .query(options2.query)
-            //     .set(options2.headers)
-            //
-            // // await console.log(response2.body.profiles[0].userId);
-            //
-            //
-            // const options3 = {
-            //     hostname: 'https://public-ubiservices.ubi.com/v1/profiles/stats',
-            //     query: {
-            //         'profileIds': response2.body.profiles[0].userId,
-            //         'spaceId': '20d5c466-84fe-4f1e-8625-f6a4e2319edf'
-            //     },
-            //     headers: {
-            //         'Authorization': `ubi_v1 t=${ticketId}`,
-            //         'Ubi-SessionId': response.body.sessionId,
-            //         'Ubi-AppId': 'f35adcb5-1911-440c-b1c9-48fdc1701c68',
-            //     }
-            // }
-            //
-            //
-            // const response3 = await superagent
-            //     .get(options3.hostname)
-            //     .query(options3.query)
-            //     .set(options3.headers)
-            //
-            // // await console.log(response3.body.profiles[0].stats);
-            //
-            // let stato = response3.body.profiles[0].stats;
-
-
-            // console.log(stato['MatchResult.endreason.Win'].value);
+            let stato = req(name, platform);
 
 
             function getStat(stat) {
@@ -120,30 +51,17 @@ module.exports = {
                 }
             }
 
-            function buildfieldVar(variable, leavezero) {
-                if(variable === "N/A" && leavezero === true) {
-                    return "0"
-                } else if(variable === "N/A" && leavezero === false) {
-                    return "N/A"
-                } else if(variable !== "N/A") {
-                    return variable
-                }
-            }
+            // Do not really need it
+            // function buildfieldVar(variable, leavezero) {
+            //     if(variable === "N/A" && leavezero === true) {
+            //         return "0"
+            //     } else if(variable === "N/A" && leavezero === false) {
+            //         return "N/A"
+            //     } else if(variable !== "N/A") {
+            //         return variable
+            //     }
+            // }
 
-
-            // function to format a value, requires buildfieldVar function, when the value is N/A, it will return N/A. When percentage is true, it will format it with
-            // 2 decimal points and a % sign. When percentage is false, it will format it with 2 decimal points.
-            function formatComma(number, percentage) {
-                if(number === "N/A") {
-                    return "N/A"
-                } else if(number !== "N/A") {
-                    if(percentage === true) {
-                        return (number.toFixed(2)).toString() + "%"
-                    } else {
-                        return number.toFixed(2)
-                    }
-                }
-            }
 
 
 

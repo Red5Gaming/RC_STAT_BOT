@@ -4,7 +4,7 @@ const superagent = require("superagent");
 const db = new QuickDB();
 const requestDb = db.table("requests");
 
-(async () => {
+// (async () => {
 
     async function checkAndGetNewTicket() {
 
@@ -102,18 +102,19 @@ return {
             // await console.log(response3.body.profiles[0].stats);
 
             let stato = response3.body.profiles[0].stats;
-            console.log(stato)
+            // console.log(stato)
         } catch(err) {
             console.log(err)
         }
 
     }
 
-    await returnStatObject("ttvtemptr", "uplay")
+    // await returnStatObject("ttvtemptr", "uplay")
 
 
-    module.exports = {returnStatObject}
+    // export the returnStatObject function
+    module.exports = returnStatObject;
 
-})();
+// })();
 
 
