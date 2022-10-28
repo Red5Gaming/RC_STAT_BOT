@@ -56,34 +56,34 @@ module.exports = {
 
 
             // times
-            let totaltime = (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) || 0) + (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch'))) || 0 + (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) || 0) + " hrs"
-            let reportedtime = Number(getStat('playtimeAbsolute')) + " hrs" // time reported by ubi, somehow capped at ~80 hours for some
-            let timeExotic = getStat('progressionPlaytimeGamemode.gamemodeid.Exotic') + " hrs"
-            let timeRanked = getStat('progressionPlaytimeGamemode.gamemodeid.Ranked') + " hrs"
-            let timeQuickMatch = (getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch') / 60 / 60).toFixed(2).toString() + " hrs"
+            let totaltime = ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch'))) / 60 / 60).toFixed(2) + " hrs"
+            let reportedtime = (getStat('playtimeAbsolute') / 60 / 60).toFixed(2) + " hrs" // time reported by ubi, somehow capped at ~80 hours for some
+            let timeExotic = (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) / 60 / 60).toFixed(2) + " hrs"
+            let timeRanked = (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) / 60 / 60).toFixed(2) + " hrs"
+            let timeQuickMatch = (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) / 60 / 60).toFixed(2).toString() + " hrs"
 
-            console.log("QM TIME" + timeQuickMatch)
+            console.log(reportedtime)
 
             // dodges
             let dodges = getStat('performanceDodge')
             let dodgesinexotic = getStat('performanceDodgeGamemode.gamemodeid.Exotic')
             let dodgesinquickmatch = getStat('performanceDodgeGamemode.gamemodeid.QuickMatch')
             let dodgesinranked = getStat('performanceDodgeGamemode.gamemodeid.Ranked')
-            let calculatedtotaldodges = (Number(dodgesinexotic) || 0) + (Number(dodgesinquickmatch)) || 0 + (Number(dodgesinranked) || 0)
+            let calculatedtotaldodges = (Number(dodgesinexotic)  ) + (Number(dodgesinquickmatch))   + (Number(dodgesinranked)  )
 
             // emotes
             let emotes = getStat('performanceEmote')
             let emotesinexotic = getStat('performanceEmoteGamemode.gamemodeid.Exotic')
             let emotesinquickmatch = getStat('performanceEmoteGamemode.gamemodeid.QuickMatch')
             let emotesinranked = getStat('performanceEmoteGamemode.gamemodeid.Ranked')
-            let calculatedemotes = (Number(emotesinexotic) || 0) + (Number(emotesinquickmatch) || 0) + (Number(emotesinranked) || 0)
+            let calculatedemotes = (Number(emotesinexotic)  ) + (Number(emotesinquickmatch)  ) + (Number(emotesinranked)  )
 
             // gates
             let gates = getStat('progressionGatesGlobal')
             let gatesinexotic = getStat('performanceGatesGamemode.gamemodeid.Exotic')
             let gatesinquickmatch = getStat('performanceGatesGamemode.gamemodeid.QuickMatch')
             let gatesinranked = getStat('performanceGatesGamemode.gamemodeid.Ranked')
-            let calculatedgates = (Number(gatesinexotic) || 0) + (Number(gatesinquickmatch) || 0) + (Number(gatesinranked) || 0)
+            let calculatedgates = (Number(gatesinexotic)  ) + (Number(gatesinquickmatch)  ) + (Number(gatesinranked)  )
 
             // all goals
             let reportedgoals = getStat('progressionGoalsGlobal')
@@ -93,21 +93,21 @@ module.exports = {
             let exotic1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked1ptgoals = getStat('performance1ptGoalGamemode.gamemodeid.Ranked')
-            let calculated1ptgoals = (Number(exotic1ptgoals) || 0) + (Number(quickmatch1ptgoals) || 0) + (Number(ranked1ptgoals) || 0)
+            let calculated1ptgoals = (Number(exotic1ptgoals)) + (Number(quickmatch1ptgoals)) + (Number(ranked1ptgoals))
 
             // 3pt goals
             let global3ptgoals = getStat('progression3ptGoalGlobal')
             let exotic3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked3ptgoals = getStat('performance3ptGoalGamemode.gamemodeid.Ranked')
-            let calculated3ptgoals = (Number(exotic3ptgoals) || 0) + (Number(quickmatch3ptgoals) || 0) + (Number(ranked3ptgoals) || 0)
+            let calculated3ptgoals = (Number(exotic3ptgoals)) + (Number(quickmatch3ptgoals)) + (Number(ranked3ptgoals))
 
             // 5pt goals
             let global5ptgoals = getStat('progression5ptGoalGlobal')
             let exotic5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.Exotic')
             let quickmatch5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.QuickMatch')
             let ranked5ptgoals = getStat('performance5ptGoalGamemode.gamemodeid.Ranked')
-            let calculated5ptgoals = (Number(exotic5ptgoals) || 0) + (Number(quickmatch5ptgoals) || 0) + (Number(ranked5ptgoals) || 0)
+            let calculated5ptgoals = (Number(exotic5ptgoals)) + (Number(quickmatch5ptgoals)) + (Number(ranked5ptgoals))
 
             let percentage1pt = ((calculated1ptgoals / reportedgoals) * 100).toFixed(2).toString() + "%"
             let percentage3pt = ((calculated3ptgoals / reportedgoals) * 100).toFixed(2).toString() + "%"
@@ -118,35 +118,35 @@ module.exports = {
             let mategrabsinexotic = getStat('performanceGrabGamemode.gamemodeid.Exotic')
             let mategrabsinquickmatch = getStat('performanceGrabGamemode.gamemodeid.QuickMatch')
             let mategrabsinranked = getStat('performanceGrabGamemode.gamemodeid.Ranked')
-            let calculatedmategrabs = (Number(mategrabsinexotic) || 0) + (Number(mategrabsinquickmatch) || 0) + (Number(mategrabsinranked) || 0)
+            let calculatedmategrabs = (Number(mategrabsinexotic)  ) + (Number(mategrabsinquickmatch)  ) + (Number(mategrabsinranked)  )
 
             // passes
             let globalPasses = getStat('progressionPassGlobal')
             let quickmatchPasses = getStat('performancePassGamemode.gamemodeid.QuickMatch')
             let rankedPasses = getStat('performancePassGamemode.gamemodeid.Ranked')
             let exoticPasses = getStat('performancePassGamemode.gamemodeid.Exotic')
-            let calculatedPasses = (Number(quickmatchPasses) || 0) + (Number(rankedPasses) || 0) + (Number(exoticPasses) || 0)
+            let calculatedPasses = (Number(quickmatchPasses)  ) + (Number(rankedPasses)  ) + (Number(exoticPasses)  )
 
             // stuns
             let globalstuns = getStat('performanceStun')
             let quickmatchstuns = getStat('performanceStunGamemode.gamemodeid.QuickMatch')
             let rankedstuns = getStat('performanceStunGamemode.gamemodeid.Ranked')
             let exoticstuns = getStat('performanceStunGamemode.gamemodeid.Exotic')
-            let calculatedstuns = (Number(quickmatchstuns) || 0) + (Number(rankedstuns) || 0) + (Number(exoticstuns) || 0)
+            let calculatedstuns = (Number(quickmatchstuns)  ) + (Number(rankedstuns)  ) + (Number(exoticstuns)  )
 
             // tackles
             let globaltackles = getStat('progressionTacklesGlobal')
             let quickmatchtackles = getStat('performanceTacklesGamemode.gamemodeid.QuickMatch')
             let rankedtackles = getStat('performanceTacklesGamemode.gamemodeid.Ranked')
             let exotictackles = getStat('performanceTacklesGamemode.gamemodeid.Exotic')
-            let calculatedtackles = (Number(quickmatchtackles) || 0) + (Number(rankedtackles) || 0) + (Number(exotictackles) || 0)
+            let calculatedtackles = (Number(quickmatchtackles)  ) + (Number(rankedtackles)  ) + (Number(exotictackles)  )
 
             // distances
             let distance = (Number(getStat('progressionDistanceGlobal')) / 1000).toFixed(2) + " km"
             let exoticdistance = Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic') / 1000).toFixed(2) + " km"
             let quickmatchdistance = (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) / 1000).toFixed(2) + " km"
             let rankeddistance = (Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')) / 1000).toFixed(2) + " km" //(rankeddistance == 'NaN' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
-            let calculateddistance = (Number(exoticdistance) + (Number(quickmatchdistance) + Number(rankeddistance)) / 1000).toFixed(2) + " km"
+            let calculateddistance = ((Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic')) + (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) + Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')))) / 1000).toFixed(2) + " km"
 
             // console.log(distance)
             // console.log(exoticdistance)
@@ -213,7 +213,7 @@ module.exports = {
 
             // mmr
             let mmr = getStat('tsrmeandef')
-            console.log(mmr)
+            // console.log(mmr)
 
             // cosmetics
             let cosmeticAmount = getStat('progressionCollection')
@@ -229,7 +229,7 @@ module.exports = {
                 })
                 .addFields({
                     name: '❗Disclaimer❗',
-                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'
+                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'
                 })
                 .addFields({
                     name: 'The project💻',
@@ -383,20 +383,20 @@ module.exports = {
                 )
 
 
-            totaltime = totaltime / 60 / 60
-            totaltime = totaltime.toFixed(2)
-
-            reportedtime = reportedtime / 60 / 60
-            reportedtime = reportedtime.toFixed(2)
-
-            timeRanked = timeRanked / 60 / 60
-            timeRanked = timeRanked.toFixed(2)
-
-            timeQuickMatch = timeQuickMatch / 60 / 60
-            timeQuickMatch = timeQuickMatch.toFixed(2)
-
-            timeExotic = timeExotic / 60 / 60
-            timeExotic = timeExotic.toFixed(2)
+            // totaltime = totaltime / 60 / 60
+            // totaltime = totaltime.toFixed(2)
+            //
+            // reportedtime = reportedtime / 60 / 60
+            // reportedtime = reportedtime.toFixed(2)
+            //
+            // timeRanked = timeRanked / 60 / 60
+            // timeRanked = timeRanked.toFixed(2)
+            //
+            // timeQuickMatch = timeQuickMatch / 60 / 60
+            // timeQuickMatch = timeQuickMatch.toFixed(2)
+            //
+            // timeExotic = timeExotic / 60 / 60
+            // timeExotic = timeExotic.toFixed(2)
 
 
             const page5 = new EmbedBuilder()
