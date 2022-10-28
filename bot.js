@@ -1,5 +1,8 @@
 // https://discord.com/api/oauth2/authorize?client_id=1032693370348371979&permissions=274878172224&scope=bot%20applications.commands
 
+// NEW TEST LINK
+// https://discord.com/api/oauth2/authorize?client_id=1032693370348371979&permissions=274878171136&scope=bot%20applications.commands
+
 const fs = require('fs');
 const {Client, GatewayIntentBits, Partials, Collection} = require('discord.js');
 const {token, guildId} = require('./config.json');
