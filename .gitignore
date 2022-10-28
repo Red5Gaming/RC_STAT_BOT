@@ -119,5 +119,5 @@ config.json
 mysql.json
 node_modules
 
-# DB Files
-*.sqlite
+
+json.sqlite

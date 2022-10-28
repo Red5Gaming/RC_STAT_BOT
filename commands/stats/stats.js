@@ -1,946 +1,562 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  Embed,
-  ButtonStyle,
-} = require("discord.js");
-const wait = require("util").promisify(setTimeout);
-
-const Pagination = require("customizable-discordjs-pagination");
-
-const superagent = require("superagent");
-
-const config = require("../../config.json");
-
-const req = require("../../utils/requestHandler.js");
-
+const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
+const wait = require('util').promisify(setTimeout);
+const Pagination = require('customizable-discordjs-pagination');
+const superagent = require('superagent');
+const config = require('../../config.json');
+const req = require('../../utils/requestHandler.js')
 module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("stats")
-    .setDescription("Checks a users stats.")
-    .setDMPermission(true)
-    .addStringOption((option) =>
-      option
-        .setName("name")
-        .setDescription("The name of the player you want to check.")
-        .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("platform")
-        .setDescription("The platform of the player you want to check.")
-        .setRequired(true)
-        .addChoices(
-          { name: "PC", value: "uplay" },
-          { name: "Playstation", value: "psn" },
-          { name: "Xbox", value: "xbl" },
-          { name: "Nintendo Switch", value: "switch" }
+    data: new SlashCommandBuilder()
+        .setName('stats')
+        .setDescription('Checks a users stats.')
+        .setDMPermission(true)
+        .addStringOption(option => option.setName('name').setDescription('The name of the player you want to check.').setRequired(true))
+        .addStringOption(option =>
+            option.setName('platform')
+                .setDescription('The platform of the player you want to check.')
+                .setRequired(true)
+                .addChoices(
+                    {name: 'PC', value: 'uplay'},
+                    {name: 'Playstation', value: 'psn'},
+                    {name: 'Xbox', value: 'xbl'},
+                    {name: 'Nintendo Switch', value: 'switch'},
+                )
         )
-    ),
+    ,
+    async execute(interaction) {
+        if(interaction.channel.id != '1004081020062138370') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
-  async execute(interaction) {
-    const name = interaction.options.getString("name");
-    const platform = interaction.options.getString("platform");
 
-    console.log(name);
-    console.log(platform);
+        const name = interaction.options.getString('name');
+        const platform = interaction.options.getString('platform');
+        console.log(name);
+        console.log(platform);
+        try {
+            let stato = await req(name, platform);
 
-    try {
-      let stato = await req(name, platform);
+            function getStat(stat) {
+                if (stato[stat] !== undefined) {
+                    return (stato[stat].value).toString();
+                } else {
+                    return "0";
+                }
+            }
 
-      function getStat(stat) {
-        if (stato[stat] !== undefined) {
-          return stato[stat].value.toString();
-        } else {
-          return "0";
+
+            // times
+            let times = {
+                 totaltime: ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch'))) / 60 / 60).toFixed(2) + " hrs",
+                 reportedtime: (getStat('playtimeAbsolute') / 60 / 60).toFixed(2) + " hrs", // time reported by ubi, somehow capped at ~80 hours for some
+                 timeExotic: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) / 60 / 60).toFixed(2) + " hrs",
+                 timeRanked: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) / 60 / 60).toFixed(2) + " hrs",
+                 timeQuickMatch: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) / 60 / 60).toFixed(2).toString() + " hrs"
+            }
+
+
+            // dodges
+            let dodges = {
+                 dodges: getStat('performanceDodge'),
+                 dodgesinexotic: getStat('performanceDodgeGamemode.gamemodeid.Exotic'),
+                 dodgesinquickmatch: getStat('performanceDodgeGamemode.gamemodeid.QuickMatch'),
+                 dodgesinranked: getStat('performanceDodgeGamemode.gamemodeid.Ranked'),
+                 calculatedtotaldodges: (Number(this.dodgesinexotic)) + (Number(this.dodgesinquickmatch)) + (Number(this.dodgesinranked))
+            }
+
+            // emotes
+            let emotes = {
+                 emotes: getStat('performanceEmote'),
+                 emotesinexotic: getStat('performanceEmoteGamemode.gamemodeid.Exotic'),
+                 emotesinquickmatch: getStat('performanceEmoteGamemode.gamemodeid.QuickMatch'),
+                 emotesinranked: getStat('performanceEmoteGamemode.gamemodeid.Ranked'),
+                 calculatedemotes: (Number(this.emotesinexotic)) + (Number(this.emotesinquickmatch)) + (Number(this.emotesinranked))
+            }
+
+            // gates
+            let gates = {
+                 gates: getStat('progressionGatesGlobal'),
+                 gatesinexotic: getStat('performanceGatesGamemode.gamemodeid.Exotic'),
+                 gatesinquickmatch: getStat('performanceGatesGamemode.gamemodeid.QuickMatch'),
+                 gatesinranked: getStat('performanceGatesGamemode.gamemodeid.Ranked'),
+                 calculatedgates: (Number(this.gatesinexotic)) + (Number(this.gatesinquickmatch)) + (Number(this.gatesinranked))
+            }
+
+            // all goals
+            let allGoals = {
+                 reportedgoals: getStat('progressionGoalsGlobal')
+            }
+
+            // 1pt goals
+            let oneptgoals = {
+                 global1ptgoals: getStat('progression1ptGoalGlobal'),
+                 exotic1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Exotic'),
+                 quickmatch1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.QuickMatch'),
+                 ranked1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Ranked'),
+                 calculated1ptgoals: (Number(this.exotic1ptgoals)) + (Number(this.quickmatch1ptgoals)) + (Number(this.ranked1ptgoals))
+            }
+
+            // 3pt goals
+            let threeptgoals = {
+                 global3ptgoals: getStat('progression3ptGoalGlobal'),
+                 exotic3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Exotic'),
+                 quickmatch3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.QuickMatch'),
+                 ranked3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Ranked'),
+                 calculated3ptgoals: (Number(this.exotic3ptgoals)) + (Number(this.quickmatch3ptgoals)) + (Number(this.ranked3ptgoals))
+            }
+
+            // 5pt goals
+            let fiveptgoals = {
+                 global5ptgoals: getStat('progression5ptGoalGlobal'),
+                 exotic5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Exotic'),
+                 quickmatch5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.QuickMatch'),
+                 ranked5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Ranked'),
+                 calculated5ptgoals: (Number(this.exotic5ptgoals)) + (Number(this.quickmatch5ptgoals)) + (Number(this.ranked5ptgoals))
+            }
+
+            let ptPercentages = {
+                 percentage1pt: ((oneptgoals.calculated1ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
+                 percentage3pt: ((threeptgoals.calculated3ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
+                 percentage5pt: ((fiveptgoals.calculated5ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%"
+            }
+
+            // grabs
+            let grabs = {
+                 mategrabs: getStat('performanceGrab'),
+                 mategrabsinexotic: getStat('performanceGrabGamemode.gamemodeid.Exotic'),
+                 mategrabsinquickmatch: getStat('performanceGrabGamemode.gamemodeid.QuickMatch'),
+                 mategrabsinranked: getStat('performanceGrabGamemode.gamemodeid.Ranked'),
+                 calculatedmategrabs: (Number(this.mategrabsinexotic)) + (Number(this.mategrabsinquickmatch)) + (Number(this.mategrabsinranked))
+            }
+
+            // passes
+            let passes = {
+                 globalPasses: getStat('progressionPassGlobal'),
+                 quickmatchPasses: getStat('performancePassGamemode.gamemodeid.QuickMatch'),
+                 rankedPasses: getStat('performancePassGamemode.gamemodeid.Ranked'),
+                 exoticPasses: getStat('performancePassGamemode.gamemodeid.Exotic'),
+                 calculatedPasses: (Number(this.quickmatchPasses)) + (Number(this.rankedPasses)) + (Number(this.exoticPasses))
+            }
+
+            // stuns
+            let stuns = {
+             globalstuns: getStat('performanceStun'),
+             quickmatchstuns: getStat('performanceStunGamemode.gamemodeid.QuickMatch'),
+             rankedstuns: getStat('performanceStunGamemode.gamemodeid.Ranked'),
+             exoticstuns: getStat('performanceStunGamemode.gamemodeid.Exotic'),
+             calculatedstuns: (Number(this.quickmatchstuns)) + (Number(this.rankedstuns)) + (Number(this.exoticstuns))
+            }
+
+            // tackles
+            let tackles = {
+             globaltackles: getStat('progressionTacklesGlobal'),
+             quickmatchtackles: getStat('performanceTacklesGamemode.gamemodeid.QuickMatch'),
+             rankedtackles: getStat('performanceTacklesGamemode.gamemodeid.Ranked'),
+             exotictackles: getStat('performanceTacklesGamemode.gamemodeid.Exotic'),
+             calculatedtackles: (Number(this.quickmatchtackles)) + (Number(this.rankedtackles)) + (Number(this.exotictackles))
+            }
+
+            // distances
+            let distances = {
+                 distance: (Number(getStat('progressionDistanceGlobal')) / 1000).toFixed(2) + " km",
+                 exoticdistance: Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic') / 1000).toFixed(2) + " km",
+                 quickmatchdistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) / 1000).toFixed(2) + " km",
+                 rankeddistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')) / 1000).toFixed(2) + " km", //(rankeddistance == 'NaN' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
+                 calculateddistance: ((Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic')) + (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) + Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')))) / 1000).toFixed(2) + " km"
+            }
+
+            // 1 / 0 stats
+            let onezerostats = {
+                 onetozeroexotic: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0'),
+                 onetozeroquickmatch: getStat('progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0'),
+                 onetozeroranked: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0'),
+                 totalonetozero: Number(this.onetozeroexotic) + Number(this.onetozeroquickmatch) + Number(this.onetozeroranked)
+            }
+
+            // map specific data
+            let mapstats = {
+                 arenaeightPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_8'),
+                 acapulcoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco'),
+                 acapulcoPlayed2v2Played: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_2v2'),
+                 acapulcoSkateparkPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_Skatepark'),
+                 bangkokPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Bangkok'),
+                 brooklynPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Brooklyn'),
+                 chichenitzaPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_ChichenItza'),
+                 chinaplayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_China'),
+                 japanPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Japan'),
+                 mexicoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Mexico'),
+                 statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
+                 venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
+            }
+
+            // minute wins in quickmatch
+            let minutewins = {
+                 minuteWinQuickmatch: getStat('progressionMatchesWon60s.gamemode.QuickMatch.endreason.Win.timerscore.60')
+            }
+
+            // sponsor data
+            let sponsorstats = {
+                 sponsorStarted: getStat('progressionSponsorContractsActivation'),
+                 sponsorCompleted: getStat('progressionSponsorContractsCompletion.stopreason.Completion')
+            }
+
+            // fans
+            let fans = {
+                 totalFans: getStat('progressionTotalFans')
+                // let totalFansExotic = getStat('progressionTotalFansGamemode.gamemodeid.Exotic') // not working
+                // let totalFansQuickmatch = getStat('progressionTotalFansGamemode.gamemodeid.QuickMatch') // not working
+                // let totalFansRanked = getStat('progressionTotalFansGamemode.gamemodeid.Ranked') // not working
+            }
+
+            // matches stats
+            let matchesStats = {
+                 totalmatches: getStat('MatchPlayed'),
+                 totalwins: getStat('MatchResult.endreason.Win'),
+                 toaldraws: getStat('MatchResult.endreason.Draw'),
+                 totalLost: getStat('MatchResult.endreason.Lost'),
+                 winpercentage: (Number(this.totalwins) / Number(this.totalmatches) * 100).toFixed(2).toString() + "%",
+                 losspercentage: (Number(this.totalLost) / Number(this.totalmatches) * 100).toFixed(2).toString() + "%",
+                 drawpercentage: (Number(this.toaldraws) / Number(this.totalmatches) * 100).toFixed(2).toString() + "%",
+                 calculatedlosses: (Number(this.totalmatches) - Number(this.totalwins) - Number(this.toaldraws)).toString()
+            }
+
+            // exotic outcomes
+            let exoticOutcomes = {
+                 exoticDraws: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Draw'),
+                 exoticWins: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Win')
+            }
+
+            // quickmatch outcomes
+            let quickmatchOutcomes = {
+                 quickmatchDraws: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Draw'),
+                 quickmatchWins: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Win')
+            }
+
+            // ranked outcomes
+            let rankedOutcomes = {
+                 rankedDraws: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Draw'),
+                 rankedWins: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Win')
+            }
+
+            // mmr
+            let mmr = getStat('tsrmeandef')
+
+
+            // cosmetics
+            let cosmeticAmount = getStat('progressionCollection')
+
+            const page0 = new EmbedBuilder()
+                .setTitle('RC Stat Bot')
+                .setURL('https://example.org/')
+                .setDescription('This bot allows you to view the stats of any player on any platform, right here in discord.')
+                .addFields({
+                    name: 'How does this work❓',
+                    value: 'Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
+                })
+                .addFields({
+                    name: '❗Disclaimer❗',
+                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'
+                })
+                .addFields({
+                    name: 'The project💻',
+                    value: "This project is open source under the Mozilla 2.0 license. You can find the source code by clicking the title of this message."
+                })
+                .setColor('#FF1653')
+            // every page is 3x4 fields
+            const page1 = new EmbedBuilder()
+                .setTitle('Important Stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields({name: "MMR", value: mmr, inline: true},
+                    {name: "Total Fans", value: fans.totalFans, inline: true},
+                    {name: "Total Matches", value: matchesStats.totalmatches, inline: true},
+                    {name: "Total Wins", value: matchesStats.totalwins, inline: true},
+                    {
+                        name: "Win Percentage (All gamemodes)",
+                        value: matchesStats.winpercentage,
+                        inline: true
+                    },
+                    {
+                        name: "Total Losses",
+                        value: `Global losses: ${matchesStats.totalLost}\n Calculated Losses: ${matchesStats.calculatedlosses}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total passes",
+                        value: `Calculated passes: ${passes.calculatedPasses} \n Global passes: ${passes.globalPasses}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total tackles",
+                        value: `Calculated tackles: ${tackles.calculatedtackles} \n Global tackles: ${tackles.globaltackles}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total stuns (getting tackled)",
+                        value: `Calculated stuns: ${stuns.calculatedstuns} \n Global stuns: ${stuns.globalstuns}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 1pt goals",
+                        value: `Calculated 1pt goals: ${oneptgoals.calculated1ptgoals} \n Global 1pt goals: ${oneptgoals.global1ptgoals}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 3pt goals",
+                        value: `Calculated 3pt goals: ${threeptgoals.calculated3ptgoals} \n Global 3pt goals: ${threeptgoals.global3ptgoals}`,
+                        inline: true
+                    },
+                    {
+                        name: "Total 5pt goals",
+                        value: `Calculated 5pt goals: ${fiveptgoals.calculated5ptgoals} \n Global 5pt goals: ${fiveptgoals.global5ptgoals}`,
+                        inline: true
+                    },
+                )
+                .setColor('#FF1653')
+            const page2 = new EmbedBuilder()
+                .setTitle('Ranked Stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Ranked Wins", value: rankedOutcomes.rankedDraws, inline: true},
+                    {name: "Ranked Draws", value: rankedOutcomes.rankedDraws, inline: true},
+                    {name: "Ranked passes", value: passes.rankedPasses, inline: true},
+                    {name: "Ranked tackles", value: tackles.rankedtackles, inline: true},
+                    {name: "Ranked dodges", value: dodges.dodgesinranked, inline: true},
+                    {name: "Ranked stuns (getting tackled)", value: stuns.rankedstuns, inline: true},
+                    {name: "Ranked 1pt goals", value: oneptgoals.ranked1ptgoals, inline: true},
+                    {name: "Ranked 3pt goals", value: threeptgoals.ranked3ptgoals, inline: true},
+                    {name: "Ranked 5pt goals", value: fiveptgoals.ranked5ptgoals, inline: true},
+                    {name: "One to zero wins", value: onezerostats.onetozeroranked, inline: true},
+                    {name: "Time played in ranked", value: times.timeRanked, inline: true},
+                    {name: "Mates grabbed in ranked", value: grabs.mategrabsinranked, inline: true},
+                    {name: "Gates activated in ranked", value: gates.gatesinranked, inline: true},
+                    {
+                        name: "Distance travelled in ranked",
+                        value: distances.rankeddistance,
+                        inline: true
+                    },
+                    {name: "Emotes used in ranked", value: emotes.emotesinranked, inline: true},
+                )
+            const page3 = new EmbedBuilder()
+                .setTitle('Quickmatch Stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "QM Wins", value: quickmatchOutcomes.quickmatchWins, inline: true},
+                    {name: "QM draws", value: quickmatchOutcomes.quickmatchDraws, inline: true},
+                    {name: "QM passes", value: passes.quickmatchPasses, inline: true},
+                    {name: "QM tackles", value: tackles.quickmatchtackles, inline: true},
+                    {name: "QM dodges", value: dodges.dodgesinquickmatch, inline: true},
+                    {name: "QM stuns (getting tackled)", value: stuns.quickmatchstuns, inline: true},
+                    {name: "QM 1pt goals", value: oneptgoals.quickmatch1ptgoals, inline: true},
+                    {name: "QM 3pt goals", value: threeptgoals.quickmatch3ptgoals, inline: true},
+                    {name: "QM 5pt goals", value: fiveptgoals.quickmatch5ptgoals, inline: true},
+                    {name: "One to zero wins", value: onezerostats.onetozeroquickmatch, inline: true},
+                    {name: "Time played in QM", value: times.timeQuickMatch, inline: true},
+                    {name: "Mates grabbed in QM", value: grabs.mategrabsinquickmatch, inline: true},
+                    {name: "Gates activated in QM", value: gates.gatesinquickmatch, inline: true},
+                    {
+                        name: "Distance travelled in QM",
+                        value: distances.quickmatchdistance,
+                        inline: true
+                    },
+                    {name: "Emotes used in QM", value: emotes.emotesinquickmatch, inline: true},
+                )
+            const page4 = new EmbedBuilder()
+                .setTitle('Exotic Stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Exotic Wins", value: exoticOutcomes.exoticWins, inline: true},
+                    {name: "Exotic draws", value: exoticOutcomes.exoticDraws, inline: true},
+                    {name: "Exotic passes", value: passes.exoticPasses, inline: true},
+                    {name: "Exotic tackles", value: tackles.exotictackles, inline: true},
+                    {name: "Exotic dodges", value: dodges.dodgesinexotic, inline: true},
+                    {
+                        name: "Exotic stuns (getting tackled)",
+                        value: stuns.exoticstuns,
+                        inline: true
+                    },
+                    {name: "Exotic 1pt goals", value: oneptgoals.exotic1ptgoals, inline: true},
+                    {name: "Exotic 3pt goals", value: threeptgoals.exotic3ptgoals, inline: true},
+                    {name: "Exotic 5pt goals", value: fiveptgoals.exotic5ptgoals, inline: true},
+                    {name: "One to zero wins", value: onezerostats.onetozeroexotic, inline: true},
+                    {name: "Time played in Exotic", value: times.timeExotic, inline: true},
+                    {
+                        name: "Mates grabbed in Exotic",
+                        value: grabs.mategrabsinexotic,
+                        inline: true
+                    },
+                    {
+                        name: "Gates activated in Exotic",
+                        value: gates.gatesinexotic,
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in Exotic",
+                        value: distances.exoticdistance,
+                        inline: true
+                    },
+                    {
+                        name: "Emotes used in Exotic",
+                        value: emotes.emotesinexotic,
+                        inline: true
+                    },
+                )
+
+
+
+            const page5 = new EmbedBuilder()
+                .setTitle('Times Played')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {
+                        name: "Calculated time",
+                        value: times.totaltime,
+                        inline: true
+                    },
+                    {
+                        name: "Reported Time (Shown in launcher)",
+                        value: times.reportedtime,
+                        inline: true
+                    },
+                    {
+                        name: "Time played in ranked",
+                        value: times.timeRanked,
+                        inline: true
+                    },
+                    {
+                        name: "Time played in QM",
+                        value: times.timeQuickMatch,
+                        inline: true
+                    },
+                    {
+                        name: "Time played in Exotic",
+                        value: times.timeExotic,
+                        inline: true
+                    },
+                )
+            const page6 = new EmbedBuilder()
+                .setTitle('Distances Travelled')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {
+                        name: "Total distance travelled",
+                        // value: (distance / 1000).toFixed(2).toString() + " km",
+                        value: distances.distance,
+                        inline: true
+                    },
+                    {
+                        name: "Calculated distance travelled",
+                        value: distances.calculateddistance,
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in ranked",
+                        value: distances.rankeddistance,
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in QM",
+                        value: distances.quickmatchdistance,
+                        inline: true
+                    },
+                    {
+                        name: "Distance travelled in Exotic",
+                        value: distances.exoticdistance,
+                        inline: true
+                    },
+                )
+            const page7 = new EmbedBuilder()
+                .setTitle('Grabs, Dodges, Tackles, Stuns, Emotes')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Total grabs", value: grabs.mategrabs.toString(), inline: true},
+                    {
+                        name: "Calculated grabs",
+                        value: grabs.calculatedmategrabs.toString(),
+                        inline: true
+                    },
+                    {name: "Total dodges", value: dodges.dodges, inline: true},
+                    {
+                        name: "Calculated dodges",
+                        value: dodges.calculatedtotaldodges.toString(),
+                        inline: true
+                    },
+                    {name: "Total tackles", value: tackles.globaltackles.toString(), inline: true},
+                    {
+                        name: "Calculated tackles",
+                        value: tackles.calculatedtackles.toString(),
+                        inline: true
+                    },
+                    {name: "Total stuns", value: stuns.globalstuns.toString(), inline: true},
+                    {name: "Calculated stuns", value: stuns.calculatedstuns.toString(), inline: true},
+                    {name: "Total emotes", value: emotes.emotes.toString(), inline: true},
+                    {name: "Calculated emotes", value: emotes.calculatedemotes.toString(), inline: true},
+                )
+            const page8 = new EmbedBuilder()
+                .setTitle('Goals, Gates, Percentages')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Total goals", value: allGoals.reportedgoals.toString(), inline: true},
+                    {name: "Calculated 1pt goals", value: oneptgoals.calculated1ptgoals.toString(), inline: true},
+                    {name: "1pt percentage", value: ptPercentages.percentage1pt.toString(), inline: true},
+                    {name: "Calculated 3pt goals", value: threeptgoals.calculated3ptgoals.toString(), inline: true},
+                    {name: "3pt percentage", value: ptPercentages.percentage3pt.toString(), inline: true},
+                    {name: "Calculated 5pt goals", value: fiveptgoals.calculated5ptgoals.toString(), inline: true},
+                    {name: "5pt percentage", value: ptPercentages.percentage5pt.toString(), inline: true},
+                    {name: "Total gates", value: gates.gates.toString(), inline: true},
+                    {name: "Calculated gates", value: gates.calculatedgates.toString(), inline: true},
+                    {name: "Win percentage", value: matchesStats.winpercentage.toString(), inline: true},
+                    {name: "Draw percentage", value: matchesStats.drawpercentage.toString(), inline: true},
+                    {name: "Loss percentage", value: matchesStats.losspercentage.toString(), inline: true},
+                )
+            const page9 = new EmbedBuilder()
+                .setTitle('Misc Stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Total 1/0 wins", value: onezerostats.totalonetozero.toString(), inline: true},
+                    {name: "Total Matches won in 60 seconds", value: minutewins.minuteWinQuickmatch.toString(), inline: true},
+                    {name: "Sponsor contracts started", value: sponsorstats.sponsorStarted.toString(), inline: true},
+                    {name: "Sponsor contracts completed", value: sponsorstats.sponsorCompleted.toString(), inline: true},
+                    {name: "Cosmetics", value: cosmeticAmount.toString(), inline: true},
+                )
+            const page10 = new EmbedBuilder()
+                .setTitle('Map stats')
+                .setDescription('Here are the stats for ' + "***" + name + "***" + " on " + platform)
+                .addFields(
+                    {name: "Total games played in Arena 8", value: mapstats.arenaeightPlayed, inline: true},
+                    {name: "Total games played in Acapulco", value: mapstats.acapulcoPlayed, inline: true},
+                    {
+                        name: "Total games played in Acapulco 2v2",
+                        value: mapstats.acapulcoPlayed2v2Played.toString(),
+                        inline: true
+                    },
+                    {name: "Total games played in Skatepark", value: mapstats.acapulcoSkateparkPlayed, inline: true},
+                    {name: "Total games played in Bangkok", value: mapstats.bangkokPlayed, inline: true},
+                    {name: "Total games played in Brooklyn", value: mapstats.brooklynPlayed, inline: true},
+                    {name: "Total games played in Chichenitza", value: mapstats.chichenitzaPlayed, inline: true},
+                    {name: "Total games played in China", value: mapstats.chinaplayed, inline: true},
+                    {name: "Total games played in Japan", value: mapstats.japanPlayed, inline: true},
+                    {name: "Total games played in Mexico", value: mapstats.mexicoPlayed, inline: true},
+                    {name: "Total games played in Staten Island", value: mapstats.statenislandPlayed, inline: true},
+                    {name: "Total games played in Venice Beach", value: mapstats.venicebeachPlayed, inline: true},
+                )
+            let pages = [page0, page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
+            const buttons = [
+                {label: 'first', emoji: '⏪', style: ButtonStyle.Secondary},
+                {label: 'Previous', emoji: '⬅', style: ButtonStyle.Danger},
+                {label: 'Next', emoji: '➡', style: ButtonStyle.Success},
+                {label: 'Last', emoji: '⏩', style: ButtonStyle.Secondary},
+            ]
+            await new Pagination({secondaryUserText: "Hey! You did not request this!", timeout: 300000})
+                .setCommand(interaction)
+                .setPages(pages)
+                .setButtons(buttons)
+                .setSelectMenu({enable: true})
+                .setFooter({enable: true})
+                .send();
+        } catch (error) {
+            console.log(error);
+            await interaction.reply({
+                content: 'You managed to produce an error, that was not supposed to happen.',
+                ephemeral: true
+            });
         }
-      }
-
-      // times
-      let totaltime =
-        (
-          (Number(getStat("progressionPlaytimeGamemode.gamemodeid.Exotic")) +
-            Number(getStat("progressionPlaytimeGamemode.gamemodeid.Ranked")) +
-            Number(
-              getStat("progressionPlaytimeGamemode.gamemodeid.QuickMatch")
-            )) /
-          60 /
-          60
-        ).toFixed(2) + " hrs";
-      let reportedtime =
-        (getStat("playtimeAbsolute") / 60 / 60).toFixed(2) + " hrs"; // time reported by ubi, somehow capped at ~80 hours for some
-      let timeExotic =
-        (
-          Number(getStat("progressionPlaytimeGamemode.gamemodeid.Exotic")) /
-          60 /
-          60
-        ).toFixed(2) + " hrs";
-      let timeRanked =
-        (
-          Number(getStat("progressionPlaytimeGamemode.gamemodeid.Ranked")) /
-          60 /
-          60
-        ).toFixed(2) + " hrs";
-      let timeQuickMatch =
-        (
-          Number(getStat("progressionPlaytimeGamemode.gamemodeid.QuickMatch")) /
-          60 /
-          60
-        )
-          .toFixed(2)
-          .toString() + " hrs";
-
-      console.log(reportedtime);
-
-      // dodges
-      let dodges = getStat("performanceDodge");
-      let dodgesinexotic = getStat(
-        "performanceDodgeGamemode.gamemodeid.Exotic"
-      );
-      let dodgesinquickmatch = getStat(
-        "performanceDodgeGamemode.gamemodeid.QuickMatch"
-      );
-      let dodgesinranked = getStat(
-        "performanceDodgeGamemode.gamemodeid.Ranked"
-      );
-      let calculatedtotaldodges =
-        Number(dodgesinexotic) +
-        Number(dodgesinquickmatch) +
-        Number(dodgesinranked);
-
-      // emotes
-      let emotes = getStat("performanceEmote");
-      let emotesinexotic = getStat(
-        "performanceEmoteGamemode.gamemodeid.Exotic"
-      );
-      let emotesinquickmatch = getStat(
-        "performanceEmoteGamemode.gamemodeid.QuickMatch"
-      );
-      let emotesinranked = getStat(
-        "performanceEmoteGamemode.gamemodeid.Ranked"
-      );
-      let calculatedemotes =
-        Number(emotesinexotic) +
-        Number(emotesinquickmatch) +
-        Number(emotesinranked);
-
-      // gates
-      let gates = getStat("progressionGatesGlobal");
-      let gatesinexotic = getStat("performanceGatesGamemode.gamemodeid.Exotic");
-      let gatesinquickmatch = getStat(
-        "performanceGatesGamemode.gamemodeid.QuickMatch"
-      );
-      let gatesinranked = getStat("performanceGatesGamemode.gamemodeid.Ranked");
-      let calculatedgates =
-        Number(gatesinexotic) +
-        Number(gatesinquickmatch) +
-        Number(gatesinranked);
-
-      // all goals
-      let reportedgoals = getStat("progressionGoalsGlobal");
-
-      // 1pt goals
-      let global1ptgoals = getStat("progression1ptGoalGlobal");
-      let exotic1ptgoals = getStat(
-        "performance1ptGoalGamemode.gamemodeid.Exotic"
-      );
-      let quickmatch1ptgoals = getStat(
-        "performance1ptGoalGamemode.gamemodeid.QuickMatch"
-      );
-      let ranked1ptgoals = getStat(
-        "performance1ptGoalGamemode.gamemodeid.Ranked"
-      );
-      let calculated1ptgoals =
-        Number(exotic1ptgoals) +
-        Number(quickmatch1ptgoals) +
-        Number(ranked1ptgoals);
-
-      // 3pt goals
-      let global3ptgoals = getStat("progression3ptGoalGlobal");
-      let exotic3ptgoals = getStat(
-        "performance3ptGoalGamemode.gamemodeid.Exotic"
-      );
-      let quickmatch3ptgoals = getStat(
-        "performance3ptGoalGamemode.gamemodeid.QuickMatch"
-      );
-      let ranked3ptgoals = getStat(
-        "performance3ptGoalGamemode.gamemodeid.Ranked"
-      );
-      let calculated3ptgoals =
-        Number(exotic3ptgoals) +
-        Number(quickmatch3ptgoals) +
-        Number(ranked3ptgoals);
-
-      // 5pt goals
-      let global5ptgoals = getStat("progression5ptGoalGlobal");
-      let exotic5ptgoals = getStat(
-        "performance5ptGoalGamemode.gamemodeid.Exotic"
-      );
-      let quickmatch5ptgoals = getStat(
-        "performance5ptGoalGamemode.gamemodeid.QuickMatch"
-      );
-      let ranked5ptgoals = getStat(
-        "performance5ptGoalGamemode.gamemodeid.Ranked"
-      );
-      let calculated5ptgoals =
-        Number(exotic5ptgoals) +
-        Number(quickmatch5ptgoals) +
-        Number(ranked5ptgoals);
-
-      let percentage1pt =
-        ((calculated1ptgoals / reportedgoals) * 100).toFixed(2).toString() +
-        "%";
-      let percentage3pt =
-        ((calculated3ptgoals / reportedgoals) * 100).toFixed(2).toString() +
-        "%";
-      let percentage5pt =
-        ((calculated5ptgoals / global5ptgoals) * 100).toFixed(2).toString() +
-        "%";
-
-      // grabs
-      let mategrabs = getStat("performanceGrab");
-      let mategrabsinexotic = getStat(
-        "performanceGrabGamemode.gamemodeid.Exotic"
-      );
-      let mategrabsinquickmatch = getStat(
-        "performanceGrabGamemode.gamemodeid.QuickMatch"
-      );
-      let mategrabsinranked = getStat(
-        "performanceGrabGamemode.gamemodeid.Ranked"
-      );
-      let calculatedmategrabs =
-        Number(mategrabsinexotic) +
-        Number(mategrabsinquickmatch) +
-        Number(mategrabsinranked);
-
-      // passes
-      let globalPasses = getStat("progressionPassGlobal");
-      let quickmatchPasses = getStat(
-        "performancePassGamemode.gamemodeid.QuickMatch"
-      );
-      let rankedPasses = getStat("performancePassGamemode.gamemodeid.Ranked");
-      let exoticPasses = getStat("performancePassGamemode.gamemodeid.Exotic");
-      let calculatedPasses =
-        Number(quickmatchPasses) + Number(rankedPasses) + Number(exoticPasses);
-
-      // stuns
-      let globalstuns = getStat("performanceStun");
-      let quickmatchstuns = getStat(
-        "performanceStunGamemode.gamemodeid.QuickMatch"
-      );
-      let rankedstuns = getStat("performanceStunGamemode.gamemodeid.Ranked");
-      let exoticstuns = getStat("performanceStunGamemode.gamemodeid.Exotic");
-      let calculatedstuns =
-        Number(quickmatchstuns) + Number(rankedstuns) + Number(exoticstuns);
-
-      // tackles
-      let globaltackles = getStat("progressionTacklesGlobal");
-      let quickmatchtackles = getStat(
-        "performanceTacklesGamemode.gamemodeid.QuickMatch"
-      );
-      let rankedtackles = getStat(
-        "performanceTacklesGamemode.gamemodeid.Ranked"
-      );
-      let exotictackles = getStat(
-        "performanceTacklesGamemode.gamemodeid.Exotic"
-      );
-      let calculatedtackles =
-        Number(quickmatchtackles) +
-        Number(rankedtackles) +
-        Number(exotictackles);
-
-      // distances
-      let distance =
-        (Number(getStat("progressionDistanceGlobal")) / 1000).toFixed(2) +
-        " km";
-      let exoticdistance =
-        Number(
-          getStat("performanceDistanceGamemode.gamemodeid.Exotic") / 1000
-        ).toFixed(2) + " km";
-      let quickmatchdistance =
-        (
-          Number(getStat("performanceDistanceGamemode.gamemodeid.QuickMatch")) /
-          1000
-        ).toFixed(2) + " km";
-      let rankeddistance =
-        (
-          Number(getStat("performanceDistanceGamemode.gamemodeid.Ranked")) /
-          1000
-        ).toFixed(2) + " km"; //(rankeddistance == 'NaN' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
-      let calculateddistance =
-        (
-          (Number(getStat("performanceDistanceGamemode.gamemodeid.Exotic")) +
-            (Number(
-              getStat("performanceDistanceGamemode.gamemodeid.QuickMatch")
-            ) +
-              Number(
-                getStat("performanceDistanceGamemode.gamemodeid.Ranked")
-              ))) /
-          1000
-        ).toFixed(2) + " km";
-
-      // console.log(distance)
-      // console.log(exoticdistance)
-      // console.log(quickmatchdistance)
-      // console.log(rankeddistance)
-      // console.log(calculateddistance)
-
-      // 1 / 0 stats
-      let onetozeroexotic = getStat(
-        "progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0"
-      );
-      let onetozeroquickmatch = getStat(
-        "progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0"
-      );
-      let onetozeroranked = getStat(
-        "progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0"
-      );
-      let totalonetozero =
-        Number(onetozeroexotic) +
-        Number(onetozeroquickmatch) +
-        Number(onetozeroranked);
-
-      // map specific data
-      let arenaeightPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_8"
-      );
-      let acapulcoPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Acapulco"
-      );
-      let acapulcoPlayed2v2Played = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_2v2"
-      );
-      let acapulcoSkateparkPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_Skatepark"
-      );
-      let bangkokPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Bangkok"
-      );
-      let brooklynPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Brooklyn"
-      );
-      let chichenitzaPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_ChichenItza"
-      );
-      let chinaplayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_China"
-      );
-      let japanPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Japan"
-      );
-      let mexicoPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_Mexico"
-      );
-      let statenislandPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland"
-      );
-      let venicebeachPlayed = getStat(
-        "progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach"
-      );
-
-      // minute wins in quickmatch
-      let minuteWinQuickmatch = getStat(
-        "progressionMatchesWon60s.gamemode.QuickMatch.endreason.Win.timerscore.60"
-      );
-
-      // sponsor data
-      let sponsorStarted = getStat("progressionSponsorContractsActivation");
-      let sponsorCompleted = getStat(
-        "progressionSponsorContractsCompletion.stopreason.Completion"
-      );
-
-      // fans
-      let totalFans = getStat("progressionTotalFans");
-      // let totalFansExotic = getStat('progressionTotalFansGamemode.gamemodeid.Exotic') // not working
-      // let totalFansQuickmatch = getStat('progressionTotalFansGamemode.gamemodeid.QuickMatch') // not working
-      // let totalFansRanked = getStat('progressionTotalFansGamemode.gamemodeid.Ranked') // not working
-
-      // matches stats
-      let totalmatches = getStat("MatchPlayed");
-      let totalwins = getStat("MatchResult.endreason.Win");
-      let toaldraws = getStat("MatchResult.endreason.Draw");
-      let totalLost = getStat("MatchResult.endreason.Lost");
-      let winpercentage =
-        ((Number(totalwins) / Number(totalmatches)) * 100)
-          .toFixed(2)
-          .toString() + "%";
-      let losspercentage =
-        ((Number(totalLost) / Number(totalmatches)) * 100)
-          .toFixed(2)
-          .toString() + "%";
-      let drawpercentage =
-        ((Number(toaldraws) / Number(totalmatches)) * 100)
-          .toFixed(2)
-          .toString() + "%";
-      let calculatedlosses = (
-        Number(totalmatches) -
-        Number(totalwins) -
-        Number(toaldraws)
-      ).toString();
-
-      // exotic outcomes
-      let exoticDraws = getStat(
-        "MatchResultGamemode.gamemode.Exotic.endreason.Draw"
-      );
-      let exoticWins = getStat(
-        "MatchResultGamemode.gamemode.Exotic.endreason.Win"
-      );
-
-      // quickmatch outcomes
-      let quickmatchDraws = getStat(
-        "MatchResultGamemode.gamemode.QuickMatch.endreason.Draw"
-      );
-      let quickmatchWins = getStat(
-        "MatchResultGamemode.gamemode.QuickMatch.endreason.Win"
-      );
-
-      // ranked outcomes
-      let rankedDraws = getStat(
-        "MatchResultGamemode.gamemode.Ranked.endreason.Draw"
-      );
-      let rankedWins = getStat(
-        "MatchResultGamemode.gamemode.Ranked.endreason.Win"
-      );
-
-      // mmr
-      let mmr = getStat("tsrmeandef");
-      // console.log(mmr)
-
-      // cosmetics
-      let cosmeticAmount = getStat("progressionCollection");
-
-      const page0 = new EmbedBuilder()
-        .setTitle("RC Stat Bot")
-        .setURL("https://example.org/")
-        .setDescription(
-          "This bot allows you to view the stats of any player on any platform, right here in discord."
-        )
-        .addFields({
-          name: "How does this work❓",
-          value:
-            "Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.",
-        })
-        .addFields({
-          name: "❗Disclaimer❗",
-          value:
-            'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.',
-        })
-        .addFields({
-          name: "The project💻",
-          value:
-            "This project is open source under the Mozilla 2.0 license. You can find the source code by clicking the title of this message.",
-        })
-        .setColor("#FF1653");
-
-      // every page is 3x4 fields
-      const page1 = new EmbedBuilder()
-        .setTitle("Important Stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          { name: "MMR", value: mmr, inline: true },
-          { name: "Total Fans", value: totalFans, inline: true },
-          { name: "Total Matches", value: totalmatches, inline: true },
-          { name: "Total Wins", value: totalwins, inline: true },
-          {
-            name: "Win Percentage (All gamemodes)",
-            value: winpercentage,
-            inline: true,
-          },
-          {
-            name: "Total Losses",
-            value: `Global losses: ${totalLost}\n Calculated Losses: ${calculatedlosses}`,
-            inline: true,
-          },
-          {
-            name: "Total passes",
-            value: `Calculated passes: ${calculatedPasses} \n Global passes: ${globalPasses}`,
-            inline: true,
-          },
-          {
-            name: "Total tackles",
-            value: `Calculated tackles: ${calculatedtackles} \n Global tackles: ${globaltackles}`,
-            inline: true,
-          },
-          {
-            name: "Total stuns (getting tackled)",
-            value: `Calculated stuns: ${calculatedstuns} \n Global stuns: ${globalstuns}`,
-            inline: true,
-          },
-          {
-            name: "Total 1pt goals",
-            value: `Calculated 1pt goals: ${calculated1ptgoals} \n Global 1pt goals: ${global1ptgoals}`,
-            inline: true,
-          },
-          {
-            name: "Total 3pt goals",
-            value: `Calculated 3pt goals: ${calculated3ptgoals} \n Global 3pt goals: ${global3ptgoals}`,
-            inline: true,
-          },
-          {
-            name: "Total 5pt goals",
-            value: `Calculated 5pt goals: ${calculated5ptgoals} \n Global 5pt goals: ${global5ptgoals}`,
-            inline: true,
-          }
-        )
-        .setColor("#FF1653");
-
-      const page2 = new EmbedBuilder()
-        .setTitle("Ranked Stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          { name: "Ranked Wins", value: rankedWins, inline: true },
-          { name: "Ranked Draws", value: rankedDraws, inline: true },
-          { name: "Ranked passes", value: rankedPasses, inline: true },
-          { name: "Ranked tackles", value: rankedtackles, inline: true },
-          { name: "Ranked dodges", value: dodgesinranked, inline: true },
-          {
-            name: "Ranked stuns (getting tackled)",
-            value: rankedstuns,
-            inline: true,
-          },
-          { name: "Ranked 1pt goals", value: ranked1ptgoals, inline: true },
-          { name: "Ranked 3pt goals", value: ranked3ptgoals, inline: true },
-          { name: "Ranked 5pt goals", value: ranked5ptgoals, inline: true },
-          { name: "One to zero wins", value: onetozeroranked, inline: true },
-          { name: "Time played in ranked", value: timeRanked, inline: true },
-          {
-            name: "Mates grabbed in ranked",
-            value: mategrabsinranked,
-            inline: true,
-          },
-          {
-            name: "Gates activated in ranked",
-            value: gatesinranked,
-            inline: true,
-          },
-          {
-            name: "Distance travelled in ranked",
-            value: rankeddistance,
-            inline: true,
-          },
-          { name: "Emotes used in ranked", value: emotesinranked, inline: true }
-        );
-
-      const page3 = new EmbedBuilder()
-        .setTitle("Quickmatch Stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          { name: "QM Wins", value: quickmatchWins, inline: true },
-          { name: "QM draws", value: quickmatchDraws, inline: true },
-          { name: "QM passes", value: quickmatchPasses, inline: true },
-          { name: "QM tackles", value: quickmatchtackles, inline: true },
-          { name: "QM dodges", value: dodgesinquickmatch, inline: true },
-          {
-            name: "QM stuns (getting tackled)",
-            value: quickmatchstuns,
-            inline: true,
-          },
-          { name: "QM 1pt goals", value: quickmatch1ptgoals, inline: true },
-          { name: "QM 3pt goals", value: quickmatch3ptgoals, inline: true },
-          { name: "QM 5pt goals", value: quickmatch5ptgoals, inline: true },
-          {
-            name: "One to zero wins",
-            value: onetozeroquickmatch,
-            inline: true,
-          },
-          { name: "Time played in QM", value: timeQuickMatch, inline: true },
-          {
-            name: "Mates grabbed in QM",
-            value: mategrabsinquickmatch,
-            inline: true,
-          },
-          {
-            name: "Gates activated in QM",
-            value: gatesinquickmatch,
-            inline: true,
-          },
-          {
-            name: "Distance travelled in QM",
-            value: quickmatchdistance,
-            inline: true,
-          },
-          { name: "Emotes used in QM", value: emotesinquickmatch, inline: true }
-        );
-
-      const page4 = new EmbedBuilder()
-        .setTitle("Exotic Stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          { name: "Exotic Wins", value: exoticWins, inline: true },
-          { name: "Exotic draws", value: exoticDraws, inline: true },
-          { name: "Exotic passes", value: exoticPasses, inline: true },
-          { name: "Exotic tackles", value: exotictackles, inline: true },
-          { name: "Exotic dodges", value: dodgesinexotic, inline: true },
-          {
-            name: "Exotic stuns (getting tackled)",
-            value: exoticstuns,
-            inline: true,
-          },
-          { name: "Exotic 1pt goals", value: exotic1ptgoals, inline: true },
-          { name: "Exotic 3pt goals", value: exotic3ptgoals, inline: true },
-          { name: "Exotic 5pt goals", value: exotic5ptgoals, inline: true },
-          { name: "One to zero wins", value: onetozeroexotic, inline: true },
-          { name: "Time played in Exotic", value: timeExotic, inline: true },
-          {
-            name: "Mates grabbed in Exotic",
-            value: mategrabsinexotic,
-            inline: true,
-          },
-          {
-            name: "Gates activated in Exotic",
-            value: gatesinexotic,
-            inline: true,
-          },
-          {
-            name: "Distance travelled in Exotic",
-            value: exoticdistance,
-            inline: true,
-          },
-          {
-            name: "Emotes used in Exotic",
-            value: emotesinexotic,
-            inline: true,
-          }
-        );
-
-      // totaltime = totaltime / 60 / 60
-      // totaltime = totaltime.toFixed(2)
-      //
-      // reportedtime = reportedtime / 60 / 60
-      // reportedtime = reportedtime.toFixed(2)
-      //
-      // timeRanked = timeRanked / 60 / 60
-      // timeRanked = timeRanked.toFixed(2)
-      //
-      // timeQuickMatch = timeQuickMatch / 60 / 60
-      // timeQuickMatch = timeQuickMatch.toFixed(2)
-      //
-      // timeExotic = timeExotic / 60 / 60
-      // timeExotic = timeExotic.toFixed(2)
-
-      const page5 = new EmbedBuilder()
-        .setTitle("Times Played")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          {
-            name: "Calculated time",
-            value: totaltime,
-            inline: true,
-          },
-          {
-            name: "Reported Time (Shown in launcher)",
-            value: reportedtime,
-            inline: true,
-          },
-          {
-            name: "Time played in ranked",
-            value: timeRanked,
-            inline: true,
-          },
-          {
-            name: "Time played in QM",
-            value: timeQuickMatch,
-            inline: true,
-          },
-          {
-            name: "Time played in Exotic",
-            value: timeExotic,
-            inline: true,
-          }
-        );
-
-      const page6 = new EmbedBuilder()
-        .setTitle("Distances Travelled")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          {
-            name: "Total distance travelled",
-            // value: (distance / 1000).toFixed(2).toString() + " km",
-            value: distance,
-            inline: true,
-          },
-
-          {
-            name: "Calculated distance travelled",
-            value: calculateddistance,
-            inline: true,
-          },
-
-          {
-            name: "Distance travelled in ranked",
-            value: rankeddistance,
-            inline: true,
-          },
-          {
-            name: "Distance travelled in QM",
-            value: quickmatchdistance,
-            inline: true,
-          },
-          {
-            name: "Distance travelled in Exotic",
-            value: exoticdistance,
-            inline: true,
-          }
-        );
-
-      const page7 = new EmbedBuilder()
-        .setTitle("Grabs, Dodges, Tackles, Stuns, Emotes")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          { name: "Total grabs", value: mategrabs.toString(), inline: true },
-          {
-            name: "Calculated grabs",
-            value: calculatedmategrabs.toString(),
-            inline: true,
-          },
-          { name: "Total dodges", value: dodges, inline: true },
-          {
-            name: "Calculated dodges",
-            value: calculatedtotaldodges.toString(),
-            inline: true,
-          },
-          {
-            name: "Total tackles",
-            value: globaltackles.toString(),
-            inline: true,
-          },
-          {
-            name: "Calculated tackles",
-            value: calculatedtackles.toString(),
-            inline: true,
-          },
-          { name: "Total stuns", value: globalstuns.toString(), inline: true },
-          {
-            name: "Calculated stuns",
-            value: calculatedstuns.toString(),
-            inline: true,
-          },
-          { name: "Total emotes", value: emotes.toString(), inline: true },
-          {
-            name: "Calculated emotes",
-            value: calculatedemotes.toString(),
-            inline: true,
-          }
-        );
-
-      const page8 = new EmbedBuilder()
-        .setTitle("Goals, Gates, Percentages")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          {
-            name: "Total goals",
-            value: reportedgoals.toString(),
-            inline: true,
-          },
-          {
-            name: "Calculated 1pt goals",
-            value: calculated1ptgoals.toString(),
-            inline: true,
-          },
-          {
-            name: "1pt percentage",
-            value: percentage1pt.toString(),
-            inline: true,
-          },
-
-          {
-            name: "Calculated 3pt goals",
-            value: calculated3ptgoals.toString(),
-            inline: true,
-          },
-          {
-            name: "3pt percentage",
-            value: percentage3pt.toString(),
-            inline: true,
-          },
-
-          {
-            name: "Calculated 5pt goals",
-            value: calculated5ptgoals.toString(),
-            inline: true,
-          },
-          {
-            name: "5pt percentage",
-            value: percentage5pt.toString(),
-            inline: true,
-          },
-
-          { name: "Total gates", value: gates.toString(), inline: true },
-          {
-            name: "Calculated gates",
-            value: calculatedgates.toString(),
-            inline: true,
-          },
-
-          {
-            name: "Win percentage",
-            value: winpercentage.toString(),
-            inline: true,
-          },
-          {
-            name: "Draw percentage",
-            value: drawpercentage.toString(),
-            inline: true,
-          },
-          {
-            name: "Loss percentage",
-            value: losspercentage.toString(),
-            inline: true,
-          }
-        );
-
-      const page9 = new EmbedBuilder()
-        .setTitle("Misc Stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          {
-            name: "Total 1/0 wins",
-            value: totalonetozero.toString(),
-            inline: true,
-          },
-          {
-            name: "Total Matches won in 60 seconds",
-            value: minuteWinQuickmatch.toString(),
-            inline: true,
-          },
-          {
-            name: "Sponsor contracts started",
-            value: sponsorStarted.toString(),
-            inline: true,
-          },
-          {
-            name: "Sponsor contracts completed",
-            value: sponsorCompleted.toString(),
-            inline: true,
-          },
-          { name: "Cosmetics", value: cosmeticAmount.toString(), inline: true }
-        );
-
-      const page10 = new EmbedBuilder()
-        .setTitle("Map stats")
-        .setDescription(
-          "Here are the stats for " + "***" + name + "***" + " on " + platform
-        )
-        .addFields(
-          {
-            name: "Total games played in Arena 8",
-            value: arenaeightPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Acapulco",
-            value: acapulcoPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Acapulco 2v2",
-            value: acapulcoPlayed2v2Played.toString(),
-            inline: true,
-          },
-          {
-            name: "Total games played in Skatepark",
-            value: acapulcoSkateparkPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Bangkok",
-            value: bangkokPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Brooklyn",
-            value: brooklynPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Chichenitza",
-            value: chichenitzaPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in China",
-            value: chinaplayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Japan",
-            value: japanPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Mexico",
-            value: mexicoPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Staten Island",
-            value: statenislandPlayed,
-            inline: true,
-          },
-          {
-            name: "Total games played in Venice Beach",
-            value: venicebeachPlayed,
-            inline: true,
-          }
-        );
-
-      let pages = [
-        page0,
-        page1,
-        page2,
-        page3,
-        page4,
-        page5,
-        page6,
-        page7,
-        page8,
-        page9,
-        page10,
-      ];
-
-      const buttons = [
-        { label: "first", emoji: "⏪", style: ButtonStyle.Secondary },
-        { label: "Previous", emoji: "⬅", style: ButtonStyle.Danger },
-        { label: "Next", emoji: "➡", style: ButtonStyle.Success },
-        { label: "Last", emoji: "⏩", style: ButtonStyle.Secondary },
-      ];
-
-      await new Pagination({
-        secondaryUserText: "Hey! You did not request this!",
-        timeout: 300000,
-      })
-        .setCommand(interaction)
-        .setPages(pages)
-        .setButtons(buttons)
-        .setSelectMenu({ enable: true })
-        .setFooter({ enable: true })
-        .send();
-    } catch (error) {
-      console.log(error);
-      await interaction.reply({
-        content:
-          "You managed to produce an error, that was not supposed to happen.",
-        ephemeral: true,
-      });
-    }
-    // end try / catch
-  },
-};
+        // end try / catch
+    },
+}
