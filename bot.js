@@ -5,7 +5,7 @@ const {
   Partials,
   Collection,
 } = require("discord.js");
-const { token, guildId } = require("./config.json");
+const { token, guildId, devToken } = require("./config.json");
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 

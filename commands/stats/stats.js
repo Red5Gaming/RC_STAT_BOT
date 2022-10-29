@@ -1,13 +1,17 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, PermissionFlagsBits } = require('discord.js');
 const wait = require('util').promisify(setTimeout);
 const Pagination = require('customizable-discordjs-pagination');
+
+const { QuickDB } = require("quick.db");
+const db = new QuickDB();
+const configDB = db.table("configDB")
 
 const req = require('../../utils/requestHandler.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
-        .setDescription('Checks a users stats. GlobalV')
+        .setDescription('Checks a users stats.')
         .setDMPermission(true)
         .addStringOption(option => option.setName('name').setDescription('The name of the player you want to check.').setRequired(true))
         .addStringOption(option =>
@@ -23,8 +27,15 @@ module.exports = {
         )
     ,
     async execute(interaction) {
-        if(interaction.channel.id != '1004081020062138370') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
+        // if(interaction.channel.id != '1004081020062138370' || '1035951943698358322' || '1035605108274253897') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
+        let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
+        // check if the message was sent in a channel that is set as a stat channel, if serverStatChannel is undefined, the server is not in the db and the command can be used everywhere. If the command is not used in a stat channel, tell the user that the command can only be used in a stat channel.
+        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({content: 'Please use this command in a stat channel.', ephemeral: true});
+
+
+
+        console.log(serverStatChannel)
 
 
 
