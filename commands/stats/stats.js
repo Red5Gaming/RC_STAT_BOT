@@ -280,7 +280,7 @@ module.exports = {
 
             const page0 = new EmbedBuilder()
                 .setTitle('RC Stat Bot')
-                .setURL('https://example.org/')
+                .setURL('https://github.com/Red5Gaming/RC_STAT_BOT')
                 .setDescription('This bot allows you to view the stats of any player on any platform, right here in discord.')
                 .addFields({
                     name: 'How does this work❓',
