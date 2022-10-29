@@ -8,6 +8,7 @@ const configDB = db.table("configDB")
 
 const req = require('../../utils/requestHandler.js')
 
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
@@ -289,29 +290,7 @@ module.exports = {
             // cosmetics
             let cosmeticAmount = getStat('progressionCollection')
 
-            const page0 = new EmbedBuilder()
-                .setTitle('RC Stat Bot')
-                .setURL('https://github.com/Red5Gaming/RC_STAT_BOT')
-                .setDescription('This bot allows you to view the stats of any player on any platform, right here in discord.')
-                .addFields({
-                    name: 'How does this work❓',
-                    value: 'Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
-                })
-                .addFields({
-                    name: '❗Disclaimers❗',
-                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n ' +
-                        'As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. ' +
-                        'This is not a perfect solution, but it is the best I can do for now.\n ' +
-                        'I can\'t guarantee that all values are correct, but I am working on it. \n \n' +
-                        'Although it is possible to play Roller Champions on the Nintendo Switch, the API behaves differently for this platform.' +
-                        ' This means that (untill further notice) the Nintendo Switch is not supported by this bot. \n'+
-                        'If you have any questions, suggestions or feedback, feel free to contact me on discord: RedGaming#2083'
-                })
-                .addFields({
-                    name: 'The project💻',
-                    value: "This project is open source under the Mozilla 2.0 license. You can find the source code by clicking the title of this message."
-                })
-                .setColor('#FF1653')
+
             // every page is 3x4 fields
             const page1 = new EmbedBuilder()
                 .setTitle('Important Stats')
@@ -581,7 +560,7 @@ module.exports = {
                 )
 
 
-            let pages = [page0, page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
+            let pages = [page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
 
             pages.forEach(page => {
                 page.setColor('#FF1653')
@@ -601,7 +580,7 @@ module.exports = {
                 .setPages(pages)
                 .setButtons(buttons)
                 .setSelectMenu({enable: true})
-                .setFooter({enable: true})
+                .setFooter({option: 'default', extraText: "Get more info with \<\/info:1035980182378533004> "})
                 .send();
         } catch (error) {
             console.log(error);
