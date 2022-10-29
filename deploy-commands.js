@@ -30,3 +30,5 @@ rest
     console.log("Successfully registered global application commands.")
   )
   .catch(console.error);
+
+

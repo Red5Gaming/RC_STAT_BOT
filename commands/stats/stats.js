@@ -7,7 +7,7 @@ const req = require('../../utils/requestHandler.js')
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('stats')
-        .setDescription('Checks a users stats.')
+        .setDescription('Checks a users stats. GlobalV')
         .setDMPermission(true)
         .addStringOption(option => option.setName('name').setDescription('The name of the player you want to check.').setRequired(true))
         .addStringOption(option =>
@@ -18,7 +18,7 @@ module.exports = {
                     {name: 'PC', value: 'uplay'},
                     {name: 'Playstation', value: 'psn'},
                     {name: 'Xbox', value: 'xbl'},
-                    {name: 'Nintendo Switch', value: 'switch'},
+                    //{name: 'Nintendo Switch', value: 'switch'},
                 )
         )
     ,
@@ -39,7 +39,7 @@ module.exports = {
         if(platform == 'uplay') platformEdit = 'PC';
         if(platform == 'psn') platformEdit = 'Playstation';
         if(platform == 'xbl') platformEdit = 'Xbox';
-        if(platform == 'switch') platformEdit = 'Nintendo Switch';
+       // if(platform == 'switch') platformEdit = 'Nintendo Switch';
 
 
         console.log(name);
@@ -287,8 +287,14 @@ module.exports = {
                     value: 'Under this message you see two things.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
                 })
                 .addFields({
-                    name: '❗Disclaimer❗',
-                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. This is not a perfect solution, but it is the best I can do for now.\n I can\'t guarantee that all values are correct, but I am working on it.'
+                    name: '❗Disclaimers❗',
+                    value: 'Some values might be wrong / don\'t add up. I am currently talking with ubisoft employees to get this fixed.\n ' +
+                        'As some sort of "substitution" I added a "calculated" value for some stats. These values are not directly provided by ubisoft, but are calculated with the present values from each individual gamemode. ' +
+                        'This is not a perfect solution, but it is the best I can do for now.\n ' +
+                        'I can\'t guarantee that all values are correct, but I am working on it. \n \n' +
+                        'Although it is possible to play Roller Champions on the Nintendo Switch, the API behaves differently for this platform.' +
+                        ' This means that (untill further notice) the Nintendo Switch is not supported by this bot. \n'+
+                        'If you have any questions, suggestions or feedback, feel free to contact me on discord: RedGaming#2083'
                 })
                 .addFields({
                     name: 'The project💻',
