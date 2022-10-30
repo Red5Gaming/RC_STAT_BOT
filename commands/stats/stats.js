@@ -1,8 +1,7 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, PermissionFlagsBits } = require('discord.js');
-const wait = require('util').promisify(setTimeout);
+const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
 const Pagination = require('customizable-discordjs-pagination');
 
-const { QuickDB } = require("quick.db");
+const {QuickDB} = require("quick.db");
 const db = new QuickDB();
 const configDB = db.table("configDB")
 
@@ -32,13 +31,13 @@ module.exports = {
 
         let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
         // check if the message was sent in a channel that is set as a stat channel, if serverStatChannel is undefined, the server is not in the db and the command can be used everywhere. If the command is not used in a stat channel, tell the user that the command can only be used in a stat channel.
-        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({content: 'Please use this command in a stat channel.', ephemeral: true});
-
+        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
+            content: 'Please use this command in a stat channel.',
+            ephemeral: true
+        });
 
 
         console.log(serverStatChannel)
-
-
 
 
         await interaction.deferReply();
@@ -48,10 +47,10 @@ module.exports = {
 
         // edit platform, so PC = PC, PSN = Playstation, XBL = Xbox, SWITCH = Nintendo Switch
         let platformEdit = platform;
-        if(platform == 'uplay') platformEdit = 'PC';
-        if(platform == 'psn') platformEdit = 'Playstation';
-        if(platform == 'xbl') platformEdit = 'Xbox';
-       // if(platform == 'switch') platformEdit = 'Nintendo Switch';
+        if (platform === 'uplay') platformEdit = 'PC';
+        if (platform === 'psn') platformEdit = 'Playstation';
+        if (platform === 'xbl') platformEdit = 'Xbox';
+        // if(platform == 'switch') platformEdit = 'Nintendo Switch';
 
 
         console.log(name);
@@ -68,7 +67,7 @@ module.exports = {
             }
 
             function addStats(...args) {
-              // the args are the name of stats, add all their values together and return the total
+                // the args are the name of stats, add all their values together and return the total
                 let total = 0;
                 for (let i = 0; i < args.length; i++) {
                     total += Number(getStat(args[i]));
@@ -81,164 +80,164 @@ module.exports = {
 
             // times
             let times = {
-                 totaltime: ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch'))) / 60 / 60).toFixed(2) + " hrs",
-                 reportedtime: (getStat('playtimeAbsolute') / 60 / 60).toFixed(2) + " hrs", // time reported by ubi, somehow capped at ~80 hours for some
-                 timeExotic: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) / 60 / 60).toFixed(2) + " hrs",
-                 timeRanked: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) / 60 / 60).toFixed(2) + " hrs",
-                 timeQuickMatch: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) / 60 / 60).toFixed(2).toString() + " hrs"
+                totaltime: ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch'))) / 60 / 60).toFixed(2) + " hrs",
+                reportedtime: (getStat('playtimeAbsolute') / 60 / 60).toFixed(2) + " hrs", // time reported by ubi, somehow capped at ~80 hours for some
+                timeExotic: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')) / 60 / 60).toFixed(2) + " hrs",
+                timeRanked: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')) / 60 / 60).toFixed(2) + " hrs",
+                timeQuickMatch: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) / 60 / 60).toFixed(2).toString() + " hrs"
             }
 
 
             // dodges
             let dodges = {
-                 dodges: getStat('performanceDodge'),
-                 dodgesinexotic: getStat('performanceDodgeGamemode.gamemodeid.Exotic'),
-                 dodgesinquickmatch: getStat('performanceDodgeGamemode.gamemodeid.QuickMatch'),
-                 dodgesinranked: getStat('performanceDodgeGamemode.gamemodeid.Ranked'),
-                 calculatedtotaldodges: (Number(getStat('performanceDodgeGamemode.gamemodeid.Exotic'))) + (Number(getStat('performanceDodgeGamemode.gamemodeid.QuickMatch'))) + (Number(getStat('performanceDodgeGamemode.gamemodeid.Ranked')))
+                dodges: getStat('performanceDodge'),
+                dodgesinexotic: getStat('performanceDodgeGamemode.gamemodeid.Exotic'),
+                dodgesinquickmatch: getStat('performanceDodgeGamemode.gamemodeid.QuickMatch'),
+                dodgesinranked: getStat('performanceDodgeGamemode.gamemodeid.Ranked'),
+                calculatedtotaldodges: (Number(getStat('performanceDodgeGamemode.gamemodeid.Exotic'))) + (Number(getStat('performanceDodgeGamemode.gamemodeid.QuickMatch'))) + (Number(getStat('performanceDodgeGamemode.gamemodeid.Ranked')))
             }
 
             // emotes
             let emotes = {
-                 emotes: getStat('performanceEmote'),
-                 emotesinexotic: getStat('performanceEmoteGamemode.gamemodeid.Exotic'),
-                 emotesinquickmatch: getStat('performanceEmoteGamemode.gamemodeid.QuickMatch'),
-                 emotesinranked: getStat('performanceEmoteGamemode.gamemodeid.Ranked'),
-                 calculatedemotes: (Number(getStat('performanceEmoteGamemode.gamemodeid.Exotic'))) + (Number(getStat('performanceEmoteGamemode.gamemodeid.QuickMatch'))) + (Number(getStat('performanceEmoteGamemode.gamemodeid.Ranked')))
+                emotes: getStat('performanceEmote'),
+                emotesinexotic: getStat('performanceEmoteGamemode.gamemodeid.Exotic'),
+                emotesinquickmatch: getStat('performanceEmoteGamemode.gamemodeid.QuickMatch'),
+                emotesinranked: getStat('performanceEmoteGamemode.gamemodeid.Ranked'),
+                calculatedemotes: (Number(getStat('performanceEmoteGamemode.gamemodeid.Exotic'))) + (Number(getStat('performanceEmoteGamemode.gamemodeid.QuickMatch'))) + (Number(getStat('performanceEmoteGamemode.gamemodeid.Ranked')))
             }
 
             // gates
             let gates = {
-                 gates: getStat('progressionGatesGlobal'),
-                 gatesinexotic: getStat('performanceGatesGamemode.gamemodeid.Exotic'),
-                 gatesinquickmatch: getStat('performanceGatesGamemode.gamemodeid.QuickMatch'),
-                 gatesinranked: getStat('performanceGatesGamemode.gamemodeid.Ranked'),
-                 calculatedgates: addStats('performanceGatesGamemode.gamemodeid.Exotic', 'performanceGatesGamemode.gamemodeid.QuickMatch', 'performanceGatesGamemode.gamemodeid.Ranked')
+                gates: getStat('progressionGatesGlobal'),
+                gatesinexotic: getStat('performanceGatesGamemode.gamemodeid.Exotic'),
+                gatesinquickmatch: getStat('performanceGatesGamemode.gamemodeid.QuickMatch'),
+                gatesinranked: getStat('performanceGatesGamemode.gamemodeid.Ranked'),
+                calculatedgates: addStats('performanceGatesGamemode.gamemodeid.Exotic', 'performanceGatesGamemode.gamemodeid.QuickMatch', 'performanceGatesGamemode.gamemodeid.Ranked')
             }
 
             console.log(gates.calculatedgates)
 
             // all goals
             let allGoals = {
-                 reportedgoals: getStat('progressionGoalsGlobal')
+                reportedgoals: getStat('progressionGoalsGlobal')
             }
 
             // 1pt goals
             let oneptgoals = {
-                 global1ptgoals: getStat('progression1ptGoalGlobal'),
-                 exotic1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Exotic'),
-                 quickmatch1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.QuickMatch'),
-                 ranked1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Ranked'),
-                 calculated1ptgoals: addStats('performance1ptGoalGamemode.gamemodeid.Exotic', 'performance1ptGoalGamemode.gamemodeid.QuickMatch', 'performance1ptGoalGamemode.gamemodeid.Ranked')
+                global1ptgoals: getStat('progression1ptGoalGlobal'),
+                exotic1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Exotic'),
+                quickmatch1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.QuickMatch'),
+                ranked1ptgoals: getStat('performance1ptGoalGamemode.gamemodeid.Ranked'),
+                calculated1ptgoals: addStats('performance1ptGoalGamemode.gamemodeid.Exotic', 'performance1ptGoalGamemode.gamemodeid.QuickMatch', 'performance1ptGoalGamemode.gamemodeid.Ranked')
             }
 
             // 3pt goals
             let threeptgoals = {
-                 global3ptgoals: getStat('progression3ptGoalGlobal'),
-                 exotic3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Exotic'),
-                 quickmatch3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.QuickMatch'),
-                 ranked3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Ranked'),
-                 calculated3ptgoals: addStats('performance3ptGoalGamemode.gamemodeid.Exotic', 'performance3ptGoalGamemode.gamemodeid.QuickMatch', 'performance3ptGoalGamemode.gamemodeid.Ranked')
+                global3ptgoals: getStat('progression3ptGoalGlobal'),
+                exotic3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Exotic'),
+                quickmatch3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.QuickMatch'),
+                ranked3ptgoals: getStat('performance3ptGoalGamemode.gamemodeid.Ranked'),
+                calculated3ptgoals: addStats('performance3ptGoalGamemode.gamemodeid.Exotic', 'performance3ptGoalGamemode.gamemodeid.QuickMatch', 'performance3ptGoalGamemode.gamemodeid.Ranked')
             }
 
             // 5pt goals
             let fiveptgoals = {
-                 global5ptgoals: getStat('progression5ptGoalGlobal'),
-                 exotic5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Exotic'),
-                 quickmatch5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.QuickMatch'),
-                 ranked5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Ranked'),
-                 calculated5ptgoals: addStats('performance5ptGoalGamemode.gamemodeid.Exotic', 'performance5ptGoalGamemode.gamemodeid.QuickMatch', 'performance5ptGoalGamemode.gamemodeid.Ranked')
+                global5ptgoals: getStat('progression5ptGoalGlobal'),
+                exotic5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Exotic'),
+                quickmatch5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.QuickMatch'),
+                ranked5ptgoals: getStat('performance5ptGoalGamemode.gamemodeid.Ranked'),
+                calculated5ptgoals: addStats('performance5ptGoalGamemode.gamemodeid.Exotic', 'performance5ptGoalGamemode.gamemodeid.QuickMatch', 'performance5ptGoalGamemode.gamemodeid.Ranked')
             }
 
             let ptPercentages = {
-                 percentage1pt: ((oneptgoals.calculated1ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
-                 percentage3pt: ((threeptgoals.calculated3ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
-                 percentage5pt: ((fiveptgoals.calculated5ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%"
+                percentage1pt: ((oneptgoals.calculated1ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
+                percentage3pt: ((threeptgoals.calculated3ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%",
+                percentage5pt: ((fiveptgoals.calculated5ptgoals / allGoals.reportedgoals) * 100).toFixed(2).toString() + "%"
             }
 
             // grabs
             let grabs = {
-                 mategrabs: getStat('performanceGrab'),
-                 mategrabsinexotic: getStat('performanceGrabGamemode.gamemodeid.Exotic'),
-                 mategrabsinquickmatch: getStat('performanceGrabGamemode.gamemodeid.QuickMatch'),
-                 mategrabsinranked: getStat('performanceGrabGamemode.gamemodeid.Ranked'),
-                 calculatedmategrabs: addStats('performanceGrabGamemode.gamemodeid.Exotic', 'performanceGrabGamemode.gamemodeid.QuickMatch', 'performanceGrabGamemode.gamemodeid.Ranked')
+                mategrabs: getStat('performanceGrab'),
+                mategrabsinexotic: getStat('performanceGrabGamemode.gamemodeid.Exotic'),
+                mategrabsinquickmatch: getStat('performanceGrabGamemode.gamemodeid.QuickMatch'),
+                mategrabsinranked: getStat('performanceGrabGamemode.gamemodeid.Ranked'),
+                calculatedmategrabs: addStats('performanceGrabGamemode.gamemodeid.Exotic', 'performanceGrabGamemode.gamemodeid.QuickMatch', 'performanceGrabGamemode.gamemodeid.Ranked')
             }
 
             // passes
             let passes = {
-                 globalPasses: getStat('progressionPassGlobal'),
-                 quickmatchPasses: getStat('performancePassGamemode.gamemodeid.QuickMatch'),
-                 rankedPasses: getStat('performancePassGamemode.gamemodeid.Ranked'),
-                 exoticPasses: getStat('performancePassGamemode.gamemodeid.Exotic'),
-                 calculatedPasses: addStats('performancePassGamemode.gamemodeid.Exotic', 'performancePassGamemode.gamemodeid.QuickMatch', 'performancePassGamemode.gamemodeid.Ranked')
+                globalPasses: getStat('progressionPassGlobal'),
+                quickmatchPasses: getStat('performancePassGamemode.gamemodeid.QuickMatch'),
+                rankedPasses: getStat('performancePassGamemode.gamemodeid.Ranked'),
+                exoticPasses: getStat('performancePassGamemode.gamemodeid.Exotic'),
+                calculatedPasses: addStats('performancePassGamemode.gamemodeid.Exotic', 'performancePassGamemode.gamemodeid.QuickMatch', 'performancePassGamemode.gamemodeid.Ranked')
             }
 
             // stuns
             let stuns = {
-             globalstuns: getStat('performanceStun'),
-             quickmatchstuns: getStat('performanceStunGamemode.gamemodeid.QuickMatch'),
-             rankedstuns: getStat('performanceStunGamemode.gamemodeid.Ranked'),
-             exoticstuns: getStat('performanceStunGamemode.gamemodeid.Exotic'),
-             calculatedstuns: addStats('performanceStunGamemode.gamemodeid.Exotic', 'performanceStunGamemode.gamemodeid.QuickMatch', 'performanceStunGamemode.gamemodeid.Ranked')
+                globalstuns: getStat('performanceStun'),
+                quickmatchstuns: getStat('performanceStunGamemode.gamemodeid.QuickMatch'),
+                rankedstuns: getStat('performanceStunGamemode.gamemodeid.Ranked'),
+                exoticstuns: getStat('performanceStunGamemode.gamemodeid.Exotic'),
+                calculatedstuns: addStats('performanceStunGamemode.gamemodeid.Exotic', 'performanceStunGamemode.gamemodeid.QuickMatch', 'performanceStunGamemode.gamemodeid.Ranked')
             }
 
             // tackles
             let tackles = {
-             globaltackles: getStat('progressionTacklesGlobal'),
-             quickmatchtackles: getStat('performanceTacklesGamemode.gamemodeid.QuickMatch'),
-             rankedtackles: getStat('performanceTacklesGamemode.gamemodeid.Ranked'),
-             exotictackles: getStat('performanceTacklesGamemode.gamemodeid.Exotic'),
-             calculatedtackles: addStats('performanceTacklesGamemode.gamemodeid.Exotic', 'performanceTacklesGamemode.gamemodeid.QuickMatch', 'performanceTacklesGamemode.gamemodeid.Ranked')
+                globaltackles: getStat('progressionTacklesGlobal'),
+                quickmatchtackles: getStat('performanceTacklesGamemode.gamemodeid.QuickMatch'),
+                rankedtackles: getStat('performanceTacklesGamemode.gamemodeid.Ranked'),
+                exotictackles: getStat('performanceTacklesGamemode.gamemodeid.Exotic'),
+                calculatedtackles: addStats('performanceTacklesGamemode.gamemodeid.Exotic', 'performanceTacklesGamemode.gamemodeid.QuickMatch', 'performanceTacklesGamemode.gamemodeid.Ranked')
             }
 
             // distances
             let distances = {
-                 distance: (Number(getStat('progressionDistanceGlobal')) / 1000).toFixed(2) + " km",
-                 exoticdistance: Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic') / 1000).toFixed(2) + " km",
-                 quickmatchdistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) / 1000).toFixed(2) + " km",
-                 rankeddistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')) / 1000).toFixed(2) + " km", //(rankeddistance == 'NaN' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
-                 calculateddistance:  (addStats('performanceDistanceGamemode.gamemodeid.Exotic', 'performanceDistanceGamemode.gamemodeid.QuickMatch', 'performanceDistanceGamemode.gamemodeid.Ranked') / 1000).toFixed(2) + " km"
+                distance: (Number(getStat('progressionDistanceGlobal')) / 1000).toFixed(2) + " km",
+                exoticdistance: Number(getStat('performanceDistanceGamemode.gamemodeid.Exotic') / 1000).toFixed(2) + " km",
+                quickmatchdistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.QuickMatch')) / 1000).toFixed(2) + " km",
+                rankeddistance: (Number(getStat('performanceDistanceGamemode.gamemodeid.Ranked')) / 1000).toFixed(2) + " km", //(rankeddistance == 'NaN' ? "0" : (rankeddistance / 1000).toFixed(2)) + " km",
+                calculateddistance: (addStats('performanceDistanceGamemode.gamemodeid.Exotic', 'performanceDistanceGamemode.gamemodeid.QuickMatch', 'performanceDistanceGamemode.gamemodeid.Ranked') / 1000).toFixed(2) + " km"
             }
 
             // 1 / 0 stats
             let onezerostats = {
-                 onetozeroexotic: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0'),
-                 onetozeroquickmatch: getStat('progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0'),
-                 onetozeroranked: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0'),
-                 totalonetozero: addStats('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0', 'progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0', 'progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0'),
+                onetozeroexotic: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0'),
+                onetozeroquickmatch: getStat('progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0'),
+                onetozeroranked: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0'),
+                totalonetozero: addStats('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0', 'progressionEndOfMatchEnemyScore.gamemodeid.QuickMatch.selfscore.1.otherscore.0', 'progressionEndOfMatchEnemyScore.gamemodeid.Ranked.selfscore.1.otherscore.0'),
             }
 
             // map specific data
             let mapstats = {
-                 arenaeightPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_8'),
-                 acapulcoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco'),
-                 acapulcoPlayed2v2Played: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_2v2'),
-                 acapulcoSkateparkPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_Skatepark'),
-                 bangkokPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Bangkok'),
-                 brooklynPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Brooklyn'),
-                 chichenitzaPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_ChichenItza'),
-                 chinaplayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_China'),
-                 japanPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Japan'),
-                 mexicoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Mexico'),
-                 statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
-                 venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
+                arenaeightPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_8'),
+                acapulcoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco'),
+                acapulcoPlayed2v2Played: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_2v2'),
+                acapulcoSkateparkPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Acapulco_Skatepark'),
+                bangkokPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Bangkok'),
+                brooklynPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Brooklyn'),
+                chichenitzaPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_ChichenItza'),
+                chinaplayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_China'),
+                japanPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Japan'),
+                mexicoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Mexico'),
+                statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
+                venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
             }
 
             // minute wins in quickmatch
             let minutewins = {
-                 minuteWinQuickmatch: getStat('progressionMatchesWon60s.gamemode.QuickMatch.endreason.Win.timerscore.60')
+                minuteWinQuickmatch: getStat('progressionMatchesWon60s.gamemode.QuickMatch.endreason.Win.timerscore.60')
             }
 
             // sponsor data
             let sponsorstats = {
-                 sponsorStarted: getStat('progressionSponsorContractsActivation'),
-                 sponsorCompleted: getStat('progressionSponsorContractsCompletion.stopreason.Completion')
+                sponsorStarted: getStat('progressionSponsorContractsActivation'),
+                sponsorCompleted: getStat('progressionSponsorContractsCompletion.stopreason.Completion')
             }
 
             // fans
             let fans = {
-                 totalFans: getStat('progressionTotalFans')
+                totalFans: getStat('progressionTotalFans')
                 // let totalFansExotic = getStat('progressionTotalFansGamemode.gamemodeid.Exotic') // not working
                 // let totalFansQuickmatch = getStat('progressionTotalFansGamemode.gamemodeid.QuickMatch') // not working
                 // let totalFansRanked = getStat('progressionTotalFansGamemode.gamemodeid.Ranked') // not working
@@ -246,41 +245,37 @@ module.exports = {
 
             // matches stats
             let matchesStats = {
-                 totalmatches: getStat('MatchPlayed'),
-                 totalwins: getStat('MatchResult.endreason.Win'),
-                 toaldraws: getStat('MatchResult.endreason.Draw'),
-                 totalLost: getStat('MatchResult.endreason.Lost'),
-                 winpercentage: Number((Number(getStat('MatchResult.endreason.Win')) / Number(getStat('MatchPlayed')) * 100).toFixed(2)) + "%",
-                 losspercentage: (Number(getStat('MatchResult.endreason.Lost')) / Number(getStat('MatchPlayed')) * 100).toFixed(2).toString() + "%",
-                 drawpercentage: (Number(getStat('MatchResult.endreason.Draw')) / Number(getStat('MatchPlayed')) * 100).toFixed(2).toString() + "%",
-                 calculatedlosses: (Number(getStat('MatchPlayed')) - Number(getStat('MatchResult.endreason.Win')) - Number(getStat('MatchResult.endreason.Draw'))).toString()
+                totalmatches: getStat('MatchPlayed'),
+                totalwins: getStat('MatchResult.endreason.Win'),
+                toaldraws: getStat('MatchResult.endreason.Draw'),
+                totalLost: getStat('MatchResult.endreason.Lost'),
+                winpercentage: Number((Number(getStat('MatchResult.endreason.Win')) / Number(getStat('MatchPlayed')) * 100).toFixed(2)) + "%",
+                losspercentage: (Number(getStat('MatchResult.endreason.Lost')) / Number(getStat('MatchPlayed')) * 100).toFixed(2).toString() + "%",
+                drawpercentage: (Number(getStat('MatchResult.endreason.Draw')) / Number(getStat('MatchPlayed')) * 100).toFixed(2).toString() + "%",
+                calculatedlosses: (Number(getStat('MatchPlayed')) - Number(getStat('MatchResult.endreason.Win')) - Number(getStat('MatchResult.endreason.Draw'))).toString()
             }
-
 
 
 //             console.log(typeof matchesStats.winpercentage)
 // console.log(matchesStats.winpercentage)
 
 
-
-
-
             // exotic outcomes
             let exoticOutcomes = {
-                 exoticDraws: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Draw'),
-                 exoticWins: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Win')
+                exoticDraws: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Draw'),
+                exoticWins: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Win')
             }
 
             // quickmatch outcomes
             let quickmatchOutcomes = {
-                 quickmatchDraws: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Draw'),
-                 quickmatchWins: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Win')
+                quickmatchDraws: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Draw'),
+                quickmatchWins: getStat('MatchResultGamemode.gamemode.QuickMatch.endreason.Win')
             }
 
             // ranked outcomes
             let rankedOutcomes = {
-                 rankedDraws: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Draw'),
-                 rankedWins: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Win')
+                rankedDraws: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Draw'),
+                rankedWins: getStat('MatchResultGamemode.gamemode.Ranked.endreason.Win')
             }
 
             // mmr
@@ -427,7 +422,6 @@ module.exports = {
                 )
 
 
-
             const page5 = new EmbedBuilder()
                 .setTitle('Times Played')
                 .addFields(
@@ -533,9 +527,17 @@ module.exports = {
                 .setTitle('Misc Stats')
                 .addFields(
                     {name: "Total 1/0 wins", value: onezerostats.totalonetozero.toString(), inline: true},
-                    {name: "Total Matches won in 60 seconds", value: minutewins.minuteWinQuickmatch.toString(), inline: true},
+                    {
+                        name: "Total Matches won in 60 seconds",
+                        value: minutewins.minuteWinQuickmatch.toString(),
+                        inline: true
+                    },
                     {name: "Sponsor contracts started", value: sponsorstats.sponsorStarted.toString(), inline: true},
-                    {name: "Sponsor contracts completed", value: sponsorstats.sponsorCompleted.toString(), inline: true},
+                    {
+                        name: "Sponsor contracts completed",
+                        value: sponsorstats.sponsorCompleted.toString(),
+                        inline: true
+                    },
                     {name: "Cosmetics", value: cosmeticAmount.toString(), inline: true},
                 )
             const page10 = new EmbedBuilder()
@@ -568,7 +570,6 @@ module.exports = {
             })
 
 
-
             const buttons = [
                 {label: 'first', emoji: '⏪', style: ButtonStyle.Secondary},
                 {label: 'Previous', emoji: '⬅', style: ButtonStyle.Danger},
@@ -580,7 +581,7 @@ module.exports = {
                 .setPages(pages)
                 .setButtons(buttons)
                 .setSelectMenu({enable: true})
-                .setFooter({option: 'default', extraText: "Get more info with \<\/info:1035980182378533004> "})
+                .setFooter({option: 'default', extraText: "Get info about the bot with /info"})
                 .send();
         } catch (error) {
             console.log(error);
