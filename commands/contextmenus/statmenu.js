@@ -4,7 +4,6 @@ const Pagination = require('customizable-discordjs-pagination');
 
 const req = require('../../utils/requestHandler.js')
 
-
 module.exports = {
     data: new ContextMenuCommandBuilder()
         .setName('check-stats')
