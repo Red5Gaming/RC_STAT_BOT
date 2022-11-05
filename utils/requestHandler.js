@@ -53,9 +53,7 @@ async function checkAndGetNewTicket() {
         };
     }
 
-
 }
-
 
 async function returnStatObject(name, platform) {
     try {
