@@ -1,59 +1,42 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, ContextMenuCommandBuilder, ApplicationCommandType} = require('discord.js');
 const Pagination = require('customizable-discordjs-pagination');
 
-const {QuickDB} = require("quick.db");
-const db = new QuickDB();
-const configDB = db.table("configDB")
 
 const req = require('../../utils/requestHandler.js')
 
 
 module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('stats')
-        .setDescription('Checks a users stats.')
-        .setDMPermission(true)
-        .addStringOption(option => option.setName('name').setDescription('The name of the player you want to check.').setRequired(true))
-        .addStringOption(option =>
-            option.setName('platform')
-                .setDescription('The platform of the player you want to check.')
-                .setRequired(true)
-                .addChoices(
-                    {name: 'PC', value: 'uplay'},
-                    {name: 'Playstation', value: 'psn'},
-                    {name: 'Xbox', value: 'xbl'},
-                    //{name: 'Nintendo Switch', value: 'switch'},
-                )
-        )
+    data: new ContextMenuCommandBuilder()
+        .setName('check-stats')
+        .setType(ApplicationCommandType.User)
     ,
     async execute(interaction) {
         // if(interaction.channel.id != '1004081020062138370' || '1035951943698358322' || '1035605108274253897') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
-        let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
-        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
-            content: 'Please use this command in a stat channel.',
-            ephemeral: true
-        });
 
-        await interaction.deferReply();
+        await interaction.deferReply({ephemeral: true});
 
-        const name = interaction.options.getString('name');
-        const platform = interaction.options.getString('platform');
-
-        // re-defining platforms, more readable for the user.
-        let platformEdit = platform;
-        if (platform === 'uplay') platformEdit = 'PC';
-        if (platform === 'psn') platformEdit = 'Playstation';
-        if (platform === 'xbl') platformEdit = 'Xbox';
-        // if(platform == 'switch') platformEdit = 'Nintendo Switch';
+        const name = interaction.targetUser.username
+        const platform = "uplay";
 
         let stato = await req(name, platform);
 
-        if (stato === undefined) {
+        if(stato === undefined) {
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
             console.log("no user found with that name")
         } else {
             console.log("user found, doing stat stuff")
+
+
+            // edit platform, so PC = PC, PSN = Playstation, XBL = Xbox, SWITCH = Nintendo Switch
+            let platformEdit = platform;
+            if (platform === 'uplay') platformEdit = 'PC';
+            if (platform === 'psn') platformEdit = 'Playstation';
+            if (platform === 'xbl') platformEdit = 'Xbox';
+            // if(platform == 'switch') platformEdit = 'Nintendo Switch';
+
+
+
 
 
             function getStat(stat) {
@@ -70,6 +53,8 @@ module.exports = {
                 console.log("User has 0 hours")
             } else {
 
+
+                // console.log(stato['progressionTotalFansGamemode.gamemode.Ranked'])
 
                 function addStats(...args) {
                     let total = 0;

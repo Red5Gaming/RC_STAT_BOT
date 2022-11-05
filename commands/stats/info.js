@@ -15,7 +15,7 @@ module.exports = {
             .setDescription('This bot allows you to view the stats of any player on any platform, right here in discord.')
             .addFields({
                 name: 'How does this work❓',
-                value: 'When using the /stat command, you will find two things under the message.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
+                value: 'When using the </stats:1035605919138058290> command, you will find two things under the message.\n 1. 4 Buttons, the outer most buttons get you to the first and last page. The inner two one page forward and one page back.\n 2. A dropdown menu that allows you to jump to any page.'
             })
             .addFields({
                 name: '❗Disclaimers❗',
@@ -26,6 +26,10 @@ module.exports = {
                     'Although it is possible to play Roller Champions on the Nintendo Switch, the API behaves differently for this platform.' +
                     ' This means that (untill further notice) the Nintendo Switch is not supported by this bot. \n'+
                     'If you have any questions, suggestions or feedback, feel free to contact me on discord: RedGaming#2083'
+            })
+            .addFields({
+                name: 'Contex Menu',
+                value: 'If you right click a user and go to "Apps", you will find a "check-stats" button. This button will open a menu that allows you to check the stats of that user.'
             })
             .addFields({
                 name: 'The project💻',
