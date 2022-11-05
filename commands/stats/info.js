@@ -24,7 +24,7 @@ module.exports = {
                     'This is not a perfect solution, but it is the best I can do for now.\n ' +
                     'I can\'t guarantee that all values are correct, but I am working on it. \n \n' +
                     'Although it is possible to play Roller Champions on the Nintendo Switch, the API behaves differently for this platform.' +
-                    ' This means that (untill further notice) the Nintendo Switch is not supported by this bot. \n'+
+                    ' This means that (untill further notice) the Nintendo Switch is not supported by this bot. \n' +
                     'If you have any questions, suggestions or feedback, feel free to contact me on discord: RedGaming#2083'
             })
             .addFields({
