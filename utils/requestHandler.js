@@ -3,6 +3,7 @@ const config = require("../config.json");
 const superagent = require("superagent");
 const db = new QuickDB();
 const requestDb = db.table("requests");
+const fs = require("fs");
 
 async function checkAndGetNewTicket() {
   const options1 = {
@@ -52,12 +53,12 @@ async function checkAndGetNewTicket() {
     };
   }
 
-  console.log("Ran function");
+
 }
 
 async function returnStatObject(name, platform) {
   try {
-    // TODO: Running function two times, should be only once for both values and better performance
+
     let ticketReturn = await checkAndGetNewTicket();
     let ticketId = ticketReturn.ticketreturnobejct.ticket;
     let sessionId = ticketReturn.ticketreturnobejct.sessionId;
@@ -79,31 +80,49 @@ async function returnStatObject(name, platform) {
       .query(options2.query)
       .set(options2.headers);
 
-    const options3 = {
-      hostname: "https://public-ubiservices.ubi.com/v1/profiles/stats",
-      query: {
-        profileIds: response2.body.profiles[0].userId,
-        spaceId: "20d5c466-84fe-4f1e-8625-f6a4e2319edf",
-      },
-      headers: {
-        Authorization: `ubi_v1 t=${ticketId}`,
-        "Ubi-SessionId": sessionId,
-        "Ubi-AppId": "f35adcb5-1911-440c-b1c9-48fdc1701c68",
-      },
-    };
+    if(response2.body.profiles.length === 0) {
 
-    const response3 = await superagent
-      .get(options3.hostname)
-      .query(options3.query)
-      .set(options3.headers);
+console.log("No user found")
 
-    // await console.log(response3.body.profiles[0].stats);
+        return;
 
-    let stato = response3.body.profiles[0].stats;
+    } else  {
 
-    return stato;
-    // console.log(stato)
-  } catch (err) {
+
+      console.log("User found");
+
+      const options3 = {
+        hostname: "https://public-ubiservices.ubi.com/v1/profiles/stats",
+        query: {
+          profileIds: response2.body.profiles[0].userId,
+          spaceId: "20d5c466-84fe-4f1e-8625-f6a4e2319edf",
+        },
+        headers: {
+          Authorization: `ubi_v1 t=${ticketId}`,
+          "Ubi-SessionId": sessionId,
+          "Ubi-AppId": "f35adcb5-1911-440c-b1c9-48fdc1701c68",
+        },
+      };
+
+      const response3 = await superagent
+          .get(options3.hostname)
+          .query(options3.query)
+          .set(options3.headers);
+
+
+      let stato = await response3.body.profiles[0].stats;
+
+
+
+
+
+      return stato
+
+    }
+
+    }
+
+   catch (err) {
     console.log(err);
   }
 }
