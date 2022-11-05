@@ -57,7 +57,6 @@ async function checkAndGetNewTicket() {
 
 async function returnStatObject(name, platform) {
     try {
-
         let ticketReturn = await checkAndGetNewTicket();
         let ticketId = ticketReturn.ticketreturnobejct.ticket;
         let sessionId = ticketReturn.ticketreturnobejct.sessionId;
