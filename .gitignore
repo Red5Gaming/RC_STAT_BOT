@@ -121,3 +121,4 @@ node_modules
 
 
 json.sqlite
+*.tar
