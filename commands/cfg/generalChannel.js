@@ -43,14 +43,18 @@ module.exports = {
 
             if (await configDB.get(server) === undefined) { // case if the server is not in the db
                 await configDB.set(server, [interaction.options.getChannel('channel').id])
+                answerembed.setTitle('Stat channel added')
+                answerembed.setDescription('The stat command is now limited to the following channel:')
+                answerembed.addFields({name: 'Channel', value: `<#${interaction.options.getChannel('channel').id}>`})
             } else if (await configDB.get(server) !== undefined && channels.includes(interaction.options.getChannel('channel').id)) { // case if the server is in the db and the channel is already set
                 answerembed.setTitle('Stat channel already set.')
                 answerembed.setDescription('The stat command is already limited to the channel you specified.')
                 answerembed.setColor(0xff0000)
             } else { // case if the server is in the db and the channel is not set
                 await configDB.push(server, interaction.options.getChannel('channel').id)
-                answerembed.setTitle('Stat channel added.')
-                answerembed.setDescription('The stat command is now limited to the channel you specified.')
+                answerembed.setTitle('Stat channel added')
+                answerembed.setDescription('The stat command is now limited to the following channel:')
+                answerembed.addFields({name: 'Channel', value: `<#${interaction.options.getChannel('channel').id}>`})
                 answerembed.setColor(0x00ff00)
                 answerembed.setTimestamp()
             }
@@ -100,7 +104,7 @@ module.exports = {
             }
         }
 
-        await interaction.reply({embeds: [answerembed], ephemeral: true})
+        await interaction.reply({embeds: [answerembed], ephemeral: false})
 
 
     }

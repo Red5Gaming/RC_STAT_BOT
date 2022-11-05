@@ -20,7 +20,12 @@ for (const folder of commandFolders) {
 
 const rest = new REST({ version: "9" }).setToken(devToken);
 
+let cmdnames = []
+for (let i = 0; i < commands.length; i++) {
+    cmdnames.push(commands[i].name)
+}
+
 // Only guild commands for testing on the dev bot. 
 rest.put(Routes.applicationGuildCommands(devClientId, devGuildId), {body: commands})
-    .then(() => console.log('Successfully registered application commands.'))
+    .then(() => console.log('Successfully registered application commands "' + cmdnames + '" for guild ' + devGuildId))
     .catch(console.error);
