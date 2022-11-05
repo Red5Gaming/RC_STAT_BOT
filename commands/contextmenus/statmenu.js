@@ -6,11 +6,11 @@ const req = require('../../utils/requestHandler.js')
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName('check-stats')
+        .setName(`Check stats`)
         .setType(ApplicationCommandType.User)
+
     ,
     async execute(interaction) {
-        // if(interaction.channel.id != '1004081020062138370' || '1035951943698358322' || '1035605108274253897') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
 
         await interaction.deferReply({ephemeral: true});
