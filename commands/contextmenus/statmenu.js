@@ -1,4 +1,11 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, ContextMenuCommandBuilder, ApplicationCommandType} = require('discord.js');
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
+    Embed,
+    ButtonStyle,
+    ContextMenuCommandBuilder,
+    ApplicationCommandType
+} = require('discord.js');
 const Pagination = require('customizable-discordjs-pagination');
 
 
@@ -20,7 +27,7 @@ module.exports = {
 
         let stato = await req(name, platform);
 
-        if(stato === undefined) {
+        if (stato === undefined) {
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
             console.log("no user found with that name")
         } else {
@@ -32,10 +39,8 @@ module.exports = {
             if (platform === 'uplay') platformEdit = 'PC';
             if (platform === 'psn') platformEdit = 'Playstation';
             if (platform === 'xbl') platformEdit = 'Xbox';
+
             // if(platform == 'switch') platformEdit = 'Nintendo Switch';
-
-
-
 
 
             function getStat(stat) {
