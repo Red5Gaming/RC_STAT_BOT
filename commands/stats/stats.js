@@ -37,6 +37,7 @@ module.exports = {
             channelNames.push(`<#${serverStatChannel[i]}>`)
         }
 
+
         if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
             content: 'Please use this command in one of the following channels: ' + channelNames.join(', '),
             ephemeral: true
