@@ -39,9 +39,7 @@ module.exports = {
             if (platform === 'uplay') platformEdit = 'PC';
             if (platform === 'psn') platformEdit = 'Playstation';
             if (platform === 'xbl') platformEdit = 'Xbox';
-
-            // if(platform == 'switch') platformEdit = 'Nintendo Switch';
-
+            // if(platform == 'switch') platformEdit = 'Nintendo Switch'; // Switch returns more than one user, so this is not possible (yet)
 
             function getStat(stat) {
                 if (stato[stat] !== undefined) {
