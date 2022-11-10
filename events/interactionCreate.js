@@ -8,6 +8,10 @@ module.exports = {
 
     if (!command) return;
 
+    // check if the bot has the permissions to send messages in the channel
+    if (!interaction.channel.permissionsFor(interaction.guild.me).has("SEND_MESSAGES")) return;
+
+
     try {
       await command.execute(interaction);
     } catch (error) {
