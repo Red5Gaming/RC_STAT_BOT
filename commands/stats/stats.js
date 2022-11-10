@@ -30,13 +30,10 @@ module.exports = {
         // if(interaction.channel.id != '1004081020062138370' || '1035951943698358322' || '1035605108274253897') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
         let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
-
         let channelNames = []
-
         for (let i = 0; i < serverStatChannel.length; i++) {
             channelNames.push(`<#${serverStatChannel[i]}>`)
         }
-
 
         if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
             content: 'Please use this command in one of the following channels: ' + channelNames.join(', '),

@@ -4,10 +4,19 @@ const {
   GatewayIntentBits,
   Partials,
   Collection,
+  ActivityType,
 } = require("discord.js");
 const { token, guildId, devToken } = require("./config.json");
 
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+  intents: [GatewayIntentBits.Guilds],
+// use PresenceData to set the bot's presence
+  presence: {
+    activities: [{name: "the rink.", type: ActivityType.Competing}],
+    status: "online",
+  },
+
+});
 
 // command handler with sub-folders
 client.commands = new Collection();
@@ -38,4 +47,4 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(token);
+client.login(devToken);

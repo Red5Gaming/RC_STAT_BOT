@@ -12,6 +12,7 @@ module.exports = {
       await command.execute(interaction);
     } catch (error) {
       console.error(error);
+      interaction.client.user.cache.get('355051285621243905').send(error);
       // return interaction.reply({content: randomError(), ephemeral: true});
     }
   },
