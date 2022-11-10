@@ -12,7 +12,6 @@ module.exports = {
     if (!interaction.channel.permissionsFor(interaction.guild.me).has("SEND_MESSAGES")) return;
 
 
-
     try {
       await command.execute(interaction);
     } catch (error) {
