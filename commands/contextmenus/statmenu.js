@@ -602,7 +602,7 @@ module.exports = {
                         new SelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
 
 
-                await interaction.editReply({embeds: [page1], components: [buttons, selectmenu]})
+                await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})
 
                 const filter = (i) => i.customId === 'first' || i.customId === 'previous' || i.customId === 'next' || i.customId === 'last' || i.customId === 'selectmenu' && i.user.id === interaction.user.id
                 const collector = interaction.channel.createMessageComponentCollector({filter, time: 300000}) // def. 300000
@@ -612,29 +612,29 @@ module.exports = {
                 collector.on('collect', async (i) => {
                         if (i.customId === 'first') {
                             currentPage = 0
-                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                         } else if (i.customId === 'previous') {
                             if (currentPage !== 0) {
                                 --currentPage
-                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             } else {
                                 currentPage = pages.length - 1
-                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             }
                         } else if (i.customId === 'next') {
                             if (currentPage < pages.length - 1) {
                                 ++currentPage
-                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             } else {
                                 currentPage = 0
-                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             }
                         } else if (i.customId === 'last') {
                             currentPage = pages.length - 1
-                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                         } else if (i.customId === 'selectmenu') {
                             currentPage = i.values[0]
-                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                         }
                     }
                 )
