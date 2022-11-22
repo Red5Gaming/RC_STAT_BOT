@@ -1,28 +1,16 @@
 const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, PermissionFlagsBits} = require('discord.js');
 
-const {QuickDB} = require("quick.db");
-const db = new QuickDB();
-const configDB = db.table("configDB")
+
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('info')
         .setDescription('Displays info about the bot and its features.')
         .setDMPermission(false)
-
     ,
     async execute(interaction) {
 
-        let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
-        let channelNames = []
-        for (let i = 0; i < serverStatChannel.length; i++) {
-            channelNames.push(`<#${serverStatChannel[i]}>`)
-        }
 
-        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
-            content: 'Please use this command in one of the following channels: ' + channelNames.join(', '),
-            ephemeral: true
-        });
 
         const page0 = new EmbedBuilder()
             .setTitle('RC Stat Bot')

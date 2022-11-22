@@ -1,11 +1,17 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle} = require('discord.js');
-const Pagination = require('customizable-discordjs-pagination');
+const {
+    SlashCommandBuilder,
+    EmbedBuilder,
 
-const {QuickDB} = require("quick.db");
-const db = new QuickDB();
-const configDB = db.table("configDB")
+    ButtonStyle,
 
-const req = require('../../utils/requestHandler.js')
+    ActionRowBuilder,
+    ButtonBuilder, SelectMenuBuilder
+} = require('discord.js');
+
+
+
+
+const req = require('../../utils/requestHandler.js').stat
 
 
 module.exports = {
@@ -27,18 +33,7 @@ module.exports = {
         )
     ,
     async execute(interaction) {
-        // if(interaction.channel.id != '1004081020062138370' || '1035951943698358322' || '1035605108274253897') return interaction.reply({content: 'Please use this command in <#1004081020062138370>', ephemeral: true});
 
-        let serverStatChannel = await configDB.get(interaction.guildId + "_config.statChannel")
-        let channelNames = []
-        for (let i = 0; i < serverStatChannel.length; i++) {
-            channelNames.push(`<#${serverStatChannel[i]}>`)
-        }
-
-        if (serverStatChannel !== undefined && !serverStatChannel.includes(interaction.channel.id)) return interaction.reply({
-            content: 'Please use this command in one of the following channels: ' + channelNames.join(', '),
-            ephemeral: true
-        });
 
         await interaction.deferReply();
 
@@ -56,10 +51,9 @@ module.exports = {
 
         if (stato === undefined) {
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
-            console.log("no user found with that name")
+            // console.log("no user found with that name")
         } else {
-            console.log("user found, doing stat stuff")
-
+            //console.log("user found, doing stat stuff")
 
             function getStat(stat) {
                 if (stato[stat] !== undefined) {
@@ -69,10 +63,9 @@ module.exports = {
                 }
             }
 
-
             if (getStat('playtimeAbsolute') === '0') {
                 await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
-                console.log("User has 0 hours")
+                //console.log("User has 0 hours")
             } else {
 
 
@@ -83,7 +76,6 @@ module.exports = {
                     }
                     return total;
                 }
-
 
                 // times
                 let times = {
@@ -346,7 +338,7 @@ module.exports = {
                 const page2 = new EmbedBuilder()
                     .setTitle('Ranked Stats')
                     .addFields(
-                        {name: "Ranked Wins", value: rankedOutcomes.rankedDraws, inline: true},
+                        {name: "Ranked Wins", value: rankedOutcomes.rankedWins, inline: true},
                         {name: "Ranked Draws", value: rankedOutcomes.rankedDraws, inline: true},
                         {name: "Ranked passes", value: passes.rankedPasses, inline: true},
                         {name: "Ranked tackles", value: tackles.rankedtackles, inline: true},
@@ -577,30 +569,87 @@ module.exports = {
                         {name: "Total games played in Venice Beach", value: mapstats.venicebeachPlayed, inline: true},
                     )
 
+                const page11 = new EmbedBuilder()
+                    // this page simply states that the stat command timed out
+                    .setTitle('Timed out')
+                    .setDescription('The stat command timed out, please use the command again')
+                    .setTimestamp()
+                    .setColor('FF1653')
+                    .setFooter({text: 'Stat command timed out'})
+
 
                 let pages = [page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
 
                 pages.forEach(page => {
                     page.setColor('#FF1653')
-                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***")
+                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***" + "\n" + "**includes custom matches which may change values and calculations.*")
+                    page.setFooter({text: 'Page ' + (pages.indexOf(page) + 1) + ' of ' + pages.length + " • Get info about the bot with /info"})
                 })
 
+                const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder().setCustomId('first').setStyle(ButtonStyle.Secondary).setEmoji('⏪'),
+                        new ButtonBuilder().setCustomId('previous').setStyle(ButtonStyle.Danger).setEmoji('⬅'),
+                        new ButtonBuilder().setCustomId('next').setStyle(ButtonStyle.Success).setEmoji('➡'),
+                        new ButtonBuilder().setCustomId('last').setStyle(ButtonStyle.Secondary).setEmoji('⏩'),
+                    )
 
-                const buttons = [
-                    {label: 'first', emoji: '⏪', style: ButtonStyle.Secondary},
-                    {label: 'Previous', emoji: '⬅', style: ButtonStyle.Danger},
-                    {label: 'Next', emoji: '➡', style: ButtonStyle.Success},
-                    {label: 'Last', emoji: '⏩', style: ButtonStyle.Secondary},
-                ]
+                let pageTitles = []
+                pages.forEach(page => {
+                    pageTitles.push(page.data.title)
+                })
+
+                let pageoptions = []
+                for (let i = 0; i < pages.length; i++) {
+                    pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`})
+                }
+
+                const selectmenu = new ActionRowBuilder()
+                    .addComponents(
+                        new SelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
 
 
-                await new Pagination({secondaryUserText: "Hey! You did not request this!", timeout: 300000})
-                    .setCommand(interaction)
-                    .setPages(pages)
-                    .setButtons(buttons)
-                    .setSelectMenu({enable: true})
-                    .setFooter({option: 'default', extraText: "Get info about the bot with /info"})
-                    .send()
+                await interaction.editReply({embeds: [page1], components: [buttons, selectmenu]})
+
+                const filter = (i) => i.customId === 'first' || i.customId === 'previous' || i.customId === 'next' || i.customId === 'last' || i.customId === 'selectmenu' && i.user.id === interaction.user.id
+                const collector = interaction.channel.createMessageComponentCollector({filter, time: 300000}) // def. 300000
+
+                let currentPage = 0
+
+                collector.on('collect', async (i) => {
+                        if (i.customId === 'first') {
+                            currentPage = 0
+                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                        } else if (i.customId === 'previous') {
+                            if (currentPage !== 0) {
+                                --currentPage
+                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            } else {
+                                currentPage = pages.length - 1
+                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            }
+                        } else if (i.customId === 'next') {
+                            if (currentPage < pages.length - 1) {
+                                ++currentPage
+                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            } else {
+                                currentPage = 0
+                                await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                            }
+                        } else if (i.customId === 'last') {
+                            currentPage = pages.length - 1
+                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                        } else if (i.customId === 'selectmenu') {
+                            currentPage = i.values[0]
+                            await i.update({embeds: [pages[currentPage]], components: [buttons, selectmenu]})
+                        }
+                    }
+                )
+
+                collector.on('end', async () => {
+                        await interaction.editReply({embeds: [page11], components: []})
+                    }
+                )
 
 
             }

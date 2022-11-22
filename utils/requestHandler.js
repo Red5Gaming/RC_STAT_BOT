@@ -24,7 +24,7 @@ async function checkAndGetNewTicket() {
     if (Number(currentDate) > Number(expirationDate)) {
         // Case if ticket is expired
 
-        console.log("Requesting new ticket");
+        //console.log("Requesting new ticket");
 
         const response = await superagent
             .post(options1.hostname)
@@ -43,7 +43,7 @@ async function checkAndGetNewTicket() {
     } else {
         // case if ticket is not expired
 
-        await console.log("Ticket is still valid");
+        //await console.log("Ticket is still valid");
 
         return {
             ticketreturnobejct: {
@@ -54,6 +54,48 @@ async function checkAndGetNewTicket() {
     }
 
 }
+
+async function returnProfileId(name, platform) {
+    try {
+        let ticketReturn = await checkAndGetNewTicket();
+        let ticketId = ticketReturn.ticketreturnobejct.ticket;
+        let sessionId = ticketReturn.ticketreturnobejct.sessionId;
+
+        const options2 = {
+            hostname: "https://public-ubiservices.ubi.com/v3/profiles",
+            query: {
+                nameOnPlatform: name,
+                platformType: platform,
+            },
+            headers: {
+                Authorization: `ubi_v1 t=${ticketId}`,
+                "Ubi-AppId": "f35adcb5-1911-440c-b1c9-48fdc1701c68",
+            },
+        };
+
+        const response2 = await superagent
+            .get(options2.hostname)
+            .query(options2.query)
+            .set(options2.headers);
+
+        if (response2.body.profiles.length === 0) {
+
+
+
+            return;
+
+        } else {
+
+            return response2.body.profiles[0].profileId;
+        }
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// await console.log(returnProfileId("RedGaming_5", "uplay"));
+
 
 async function returnStatObject(name, platform) {
     try {
@@ -80,14 +122,14 @@ async function returnStatObject(name, platform) {
 
         if (response2.body.profiles.length === 0) {
 
-            console.log("No user found")
+            //console.log("No user found")
 
             return;
 
         } else {
 
 
-            console.log("User found");
+            //console.log("User found");
 
             const options3 = {
                 hostname: "https://public-ubiservices.ubi.com/v1/profiles/stats",
@@ -120,4 +162,5 @@ async function returnStatObject(name, platform) {
     }
 }
 
-module.exports = returnStatObject;
+module.exports.stat = returnStatObject;
+module.exports.profId = returnProfileId;

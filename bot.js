@@ -24,8 +24,8 @@ const commandFolders = fs.readdirSync("./commands");
 
 for (const folder of commandFolders) {
   const commandFiles = fs
-    .readdirSync(`./commands/${folder}`)
-    .filter((file) => file.endsWith(".js")); // Retrieve the cmd files inside subfolders
+      .readdirSync(`./commands/${folder}`)
+      .filter((file) => file.endsWith(".js")); // Retrieve the cmd files inside subfolders
 
   for (const file of commandFiles) {
     const command = require(`./commands/${folder}/${file}`);
@@ -34,8 +34,8 @@ for (const folder of commandFolders) {
   }
 }
 const eventFiles = fs
-  .readdirSync("./events")
-  .filter((file) => file.endsWith(".js"));
+    .readdirSync("./events")
+    .filter((file) => file.endsWith(".js"));
 
 // event handler
 for (const file of eventFiles) {
