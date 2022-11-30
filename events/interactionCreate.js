@@ -12,8 +12,9 @@ module.exports = {
 
     if (!command) return;
 
-    // check if the bot has the permissions to send messages in the channel
     if(!interaction.guild.members.me.permissions.has(PermissionsBitField.Flags.SendMessages)) return;
+
+
 
 
     try {

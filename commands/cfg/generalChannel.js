@@ -28,6 +28,9 @@ module.exports = {
     ,
     async execute(interaction) {
 
+
+        await interaction.deferReply()
+
         let server = interaction.guildId + "_config.statChannel"
         let channels = await configDB.get(server)
 
@@ -104,7 +107,7 @@ module.exports = {
             }
         }
 
-        await interaction.reply({embeds: [answerembed], ephemeral: false})
+        await interaction.editReply({embeds: [answerembed], ephemeral: false})
 
 
     }

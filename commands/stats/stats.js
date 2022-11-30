@@ -9,8 +9,6 @@ const {
 } = require('discord.js');
 
 
-
-
 const req = require('../../utils/requestHandler.js').stat
 
 
@@ -617,32 +615,40 @@ module.exports = {
                 let currentPage = 0
 
                 collector.on('collect', async (i) => {
-                        if (i.customId === 'first') {
-                            currentPage = 0
-                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                        } else if (i.customId === 'previous') {
-                            if (currentPage !== 0) {
-                                --currentPage
-                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else {
-                                currentPage = pages.length - 1
-                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            }
-                        } else if (i.customId === 'next') {
-                            if (currentPage < pages.length - 1) {
-                                ++currentPage
-                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else {
+                        if (i.user.id !== interaction.user.id) return i.reply({
+                            content: 'You cannot use this button',
+                            ephemeral: true
+                        }) // if the user who used the button is not the same as the user who used the command, return
+                        else {
+
+                            if (i.customId === 'first') {
                                 currentPage = 0
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                            } else if (i.customId === 'previous') {
+                                if (currentPage !== 0) {
+                                    --currentPage
+                                    await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                                } else {
+                                    currentPage = pages.length - 1
+                                    await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                                }
+                            } else if (i.customId === 'next') {
+                                if (currentPage < pages.length - 1) {
+                                    ++currentPage
+                                    await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                                } else {
+                                    currentPage = 0
+                                    await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                                }
+                            } else if (i.customId === 'last') {
+                                currentPage = pages.length - 1
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
+                            } else if (i.customId === 'selectmenu') {
+                                currentPage = i.values[0]
+                                await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             }
-                        } else if (i.customId === 'last') {
-                            currentPage = pages.length - 1
-                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                        } else if (i.customId === 'selectmenu') {
-                            currentPage = i.values[0]
-                            await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                         }
+
                     }
                 )
 

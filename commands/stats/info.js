@@ -10,7 +10,7 @@ module.exports = {
     ,
     async execute(interaction) {
 
-
+    await interaction.deferReply()
 
         const page0 = new EmbedBuilder()
             .setTitle('RC Stat Bot')
@@ -40,7 +40,7 @@ module.exports = {
             })
             .setColor('#FF1653')
 
-        await interaction.reply({embeds: [page0], ephemeral: false})
+        await interaction.editReply({embeds: [page0], ephemeral: false})
 
     }
 }
