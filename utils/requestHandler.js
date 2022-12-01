@@ -97,6 +97,41 @@ async function returnProfileId(name, platform) {
 // await console.log(returnProfileId("RedGaming_5", "uplay"));
 
 
+async function checkIfUserExists(name, platform) {
+    try {
+        let ticketReturn = await checkAndGetNewTicket();
+        let ticketId = ticketReturn.ticketreturnobejct.ticket;
+        let sessionId = ticketReturn.ticketreturnobejct.sessionId;
+
+        const options2 = {
+            hostname: "https://public-ubiservices.ubi.com/v3/profiles",
+            query: {
+                nameOnPlatform: name,
+                platformType: platform,
+            },
+            headers: {
+                Authorization: `ubi_v1 t=${ticketId}`,
+                "Ubi-AppId": "f35adcb5-1911-440c-b1c9-48fdc1701c68",
+            },
+        };
+
+        const response2 = await superagent
+            .get(options2.hostname)
+            .query(options2.query)
+            .set(options2.headers);
+
+        if (response2.body.profiles.length === 0) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
 async function returnStatObject(name, platform) {
     try {
         let ticketReturn = await checkAndGetNewTicket();
@@ -164,3 +199,4 @@ async function returnStatObject(name, platform) {
 
 module.exports.stat = returnStatObject;
 module.exports.profId = returnProfileId;
+module.exports.checkIfUserExists = checkIfUserExists;
