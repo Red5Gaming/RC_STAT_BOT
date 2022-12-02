@@ -1,7 +1,5 @@
 const {
-    SlashCommandBuilder,
     EmbedBuilder,
-    Embed,
     ButtonStyle,
     ContextMenuCommandBuilder,
     ApplicationCommandType, ActionRowBuilder, ButtonBuilder, SelectMenuBuilder

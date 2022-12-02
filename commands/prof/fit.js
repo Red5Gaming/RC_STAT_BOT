@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, PermissionFlagsBits} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 
 const req = require('../../utils/requestHandler.js').profId
 const usercheck = require('../../utils/requestHandler.js').checkIfUserExists

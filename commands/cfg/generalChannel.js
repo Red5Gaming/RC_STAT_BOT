@@ -1,4 +1,4 @@
-const {SlashCommandBuilder, EmbedBuilder, Embed, ButtonStyle, PermissionFlagsBits} = require('discord.js');
+const {SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 
 const {QuickDB} = require("quick.db");
 const db = new QuickDB();

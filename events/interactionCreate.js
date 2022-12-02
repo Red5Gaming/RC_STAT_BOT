@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageActionRow, MessageButton, PermissionsBitField } = require("discord.js");
+const {PermissionsBitField } = require("discord.js");
 
 const {QuickDB} = require("quick.db");
 const db = new QuickDB();
@@ -41,8 +41,15 @@ module.exports = {
       await command.execute(interaction);
 
     } catch (error) {
+
       console.error(error);
-      // return interaction.reply({content: randomError(), ephemeral: true});
+
+      await interaction.reply({
+        content: "There was an error while executing this command!",
+        ephemeral: true,
+      });
+
+
     }
   },
 };
