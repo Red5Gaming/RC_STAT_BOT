@@ -5,7 +5,7 @@ const {
     ButtonStyle,
 
     ActionRowBuilder,
-    ButtonBuilder, SelectMenuBuilder
+    ButtonBuilder, StringSelectMenuBuilder
 } = require('discord.js');
 
 
@@ -43,11 +43,11 @@ module.exports = {
         if (platform === 'uplay') platformEdit = 'PC';
         if (platform === 'psn') platformEdit = 'Playstation';
         if (platform === 'xbl') platformEdit = 'Xbox';
-        // if(platform == 'switch') platformEdit = 'Nintendo Switch';
+        // if(platform == 'switch') platformEdit = 'Nintendo Switch'; //Not working currently
 
         let stato = await req(name, platform);
 
-        if (stato === undefined) {
+        if (stato === undefined) { // case if the user does not exist
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
             // console.log("no user found with that name")
         } else {
@@ -61,7 +61,7 @@ module.exports = {
                 }
             }
 
-            if (getStat('playtimeAbsolute') === '0') {
+            if (getStat('playtimeAbsolute') === '0') { // check if the user has not played any games
                 await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
                 //console.log("User has 0 hours")
             } else {
@@ -332,7 +332,7 @@ module.exports = {
                             inline: true
                         },
                     )
-                    .setColor('#FF1653')
+
                 const page2 = new EmbedBuilder()
                     .setTitle('Ranked Stats')
                     .addFields(
@@ -567,8 +567,8 @@ module.exports = {
                         {name: "Total games played in Venice Beach", value: mapstats.venicebeachPlayed, inline: true},
                     )
 
+                // Timeout page
                 const page11 = new EmbedBuilder()
-                    // this page simply states that the stat command timed out
                     .setTitle('Timed out')
                     .setDescription('The stat command timed out, please use the command again')
                     .setTimestamp()
@@ -578,9 +578,10 @@ module.exports = {
 
                 let pages = [page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
 
+                // Adding attributes to the pages so I dont have to add them one by one
                 pages.forEach(page => {
                     page.setColor('#FF1653')
-                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***" + "\n" + "**includes custom matches which may change values and calculations.*")
+                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***" + "\n" + "**includes custom matches which may change some values and calculations.*")
                     page.setFooter({text: 'Page ' + (pages.indexOf(page) + 1) + ' of ' + pages.length + " • Get info about the bot with /info"})
                 })
 
@@ -592,11 +593,13 @@ module.exports = {
                         new ButtonBuilder().setCustomId('last').setStyle(ButtonStyle.Secondary).setEmoji('⏩'),
                     )
 
+                // Array with all page titles
                 let pageTitles = []
                 pages.forEach(page => {
                     pageTitles.push(page.data.title)
                 })
 
+                // Adding the page labels and their index to an object
                 let pageoptions = []
                 for (let i = 0; i < pages.length; i++) {
                     pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`})
@@ -604,8 +607,7 @@ module.exports = {
 
                 const selectmenu = new ActionRowBuilder()
                     .addComponents(
-                        new SelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
-
+                        new StringSelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
 
                 await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})
 
@@ -615,35 +617,35 @@ module.exports = {
                 let currentPage = 0
 
                 collector.on('collect', async (i) => {
-                        if (i.user.id !== interaction.user.id) return i.reply({
+                        if (i.user.id !== interaction.user.id) return i.reply({ // case if someone else clicks the button
                             content: 'You cannot use this button',
                             ephemeral: true
-                        }) // if the user who used the button is not the same as the user who used the command, return
-                        else {
+                        })
+                        else { // case if the user clicks the button
 
-                            if (i.customId === 'first') {
+                            if (i.customId === 'first') { // case if the user clicks the first button
                                 currentPage = 0
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else if (i.customId === 'previous') {
+                            } else if (i.customId === 'previous') { // case if the user clicks the previous button
                                 if (currentPage !== 0) {
                                     --currentPage
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                                } else {
+                                } else { // case if the user clicks the previous button on the first page
                                     currentPage = pages.length - 1
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                                 }
-                            } else if (i.customId === 'next') {
+                            } else if (i.customId === 'next') { // case if the user clicks the next button
                                 if (currentPage < pages.length - 1) {
                                     ++currentPage
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                                } else {
+                                } else { // case if the user clicks the next button on the last page
                                     currentPage = 0
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                                 }
-                            } else if (i.customId === 'last') {
+                            } else if (i.customId === 'last') { // case if the user clicks the last button
                                 currentPage = pages.length - 1
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else if (i.customId === 'selectmenu') {
+                            } else if (i.customId === 'selectmenu') { // case if the user clicks the select menu
                                 currentPage = i.values[0]
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             }

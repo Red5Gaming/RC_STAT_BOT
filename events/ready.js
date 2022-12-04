@@ -4,20 +4,31 @@ module.exports = {
     execute(client) {
         console.log(`Ready! Logged in as ${client.user.tag}`);
 
-        let totalMembers = 0;
+let allusers = 0;
+        client.shard
+            .broadcastEval(c => c.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0))
+            .then(results => {
+                return console.log(`- Total member count: ${results.reduce((acc, memberCount) => acc + memberCount, 0)}`);
 
-        client.guilds.cache.forEach((guild) => {
+            })
+            .catch(console.error);
 
-            // console.log(guild.name);
-            // log the guilds name, spot in the array  and user count
-            console.log(` - ${guild.name} | Member count: ${guild.memberCount}`);
+        let toalGuilds = 0;
+        client.shard
+            .broadcastEval(c => c.guilds.cache.size)
+            .then(results => {
+                 console.log(`- Total guild count: ${results.reduce((acc, guildCount) => acc + guildCount, 0)}`)
 
-            totalMembers += guild.memberCount;
+            })
 
-        });
+// get the names of all servers
+        client.shard
+            .broadcastEval(c => c.guilds.cache.map(g => g.name))
+            .then(results => {
+                // format the results with each server name on a new line, with replacing the comma with a new line and a - in front of it
+                return console.log(`- ${results.map(r => r.join('\n- '))}`);
+            })
 
-        console.log("- Total guilds: " + client.guilds.cache.size);
-        console.log("- Total members: " + totalMembers);
 
 
     }

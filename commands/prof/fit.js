@@ -24,9 +24,9 @@ module.exports = {
     ,
     async execute(interaction) {
 
-        if(await usercheck(interaction.options.getString('name'), interaction.options.getString('platform')) === false) {
+        if(await usercheck(interaction.options.getString('name'), interaction.options.getString('platform')) === false) { // check if the user exists
             await interaction.reply({content: 'This user seems to not have a profile.', ephemeral: true})
-        } else {
+        } else { // if the user exists
 
             let profileId = await req(interaction.options.getString('name'), interaction.options.getString('platform'))
             console.log(profileId)

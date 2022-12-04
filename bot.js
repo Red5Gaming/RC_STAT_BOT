@@ -8,39 +8,17 @@ const {
 const { token, devToken } = require("./config.json");
 
 
-
-
-
-let presences = [
-    {
-        name: "to %placeholder% users",
-        type: ActivityType.Listening,
-      status: "online",
-    },
-    {
-        name: "the latest news",
-        type: ActivityType.Watching,
-        status: "online",
-    },
-    {
-      name: "the rink",
-      type: ActivityType.Competing,
-        status: "online",
-    },
-];
-
-
-
 const client = new Client({
   intents: [GatewayIntentBits.Guilds],
-// use PresenceData to set the bot's presence
 
+// TODO: Cycle through presences
   presence: {
     activities: [{name: "the rink.", type: ActivityType.Competing}],
     status: "online",
   },
 
 });
+
 
 
 // command handler with sub-folders
@@ -72,4 +50,4 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(token);
+client.login(devToken);

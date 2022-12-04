@@ -2,7 +2,7 @@ const {
     EmbedBuilder,
     ButtonStyle,
     ContextMenuCommandBuilder,
-    ApplicationCommandType, ActionRowBuilder, ButtonBuilder, SelectMenuBuilder
+    ApplicationCommandType, ActionRowBuilder, ButtonBuilder, SelectMenuBuilder, StringSelectMenuBuilder
 } = require('discord.js');
 
 
@@ -11,7 +11,7 @@ const req = require('../../utils/requestHandler.js').stat
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
-        .setName(`Check stats Dev`)
+        .setName(`Check stats`)
         .setType(ApplicationCommandType.User)
 
     ,
@@ -571,7 +571,7 @@ module.exports = {
 
                 pages.forEach(page => {
                     page.setColor('#FF1653')
-                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***" + "\n" + "**includes custom matches which may change values and calculations.*")
+                    page.setDescription('Here are the stats for ' + "***" + name + "***" + " on " + "***" + platformEdit + "***" + "\n" + "**includes custom matches which may change some values and calculations.*")
                     page.setFooter({text: 'Page ' + (pages.indexOf(page) + 1) + ' of ' + pages.length + " • Get info about the bot with /info"})
                 })
 
@@ -597,7 +597,7 @@ module.exports = {
 
                 const selectmenu = new ActionRowBuilder()
                     .addComponents(
-                        new SelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
+                        new StringSelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
 
 
                 await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})

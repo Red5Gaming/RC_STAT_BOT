@@ -120,5 +120,5 @@ mysql.json
 node_modules
 
 
-json.sqlite
+db/json.sqlite
 *.tar

@@ -1,8 +1,12 @@
 const {SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 
+
+
 const {QuickDB} = require("quick.db");
-const db = new QuickDB();
+// const db = new QuickDB();
+const db = new QuickDB({filePath: 'db\\json.sqlite'});
 const configDB = db.table("configDB")
+
 
 
 module.exports = {
