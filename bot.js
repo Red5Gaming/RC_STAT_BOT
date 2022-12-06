@@ -1,3 +1,5 @@
+console.log('Bot.js loaded');
+
 const fs = require("fs");
 const {
   Client,

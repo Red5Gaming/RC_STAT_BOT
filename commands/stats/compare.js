@@ -114,6 +114,10 @@ module.exports = {
                 let winrate1 = (getStat('MatchResult.endreason.Win')[0] / getStat('MatchPlayed')[0] * 100).toFixed(2);
                 let winrate2 = (getStat('MatchResult.endreason.Win')[1] / getStat('MatchPlayed')[1] * 100).toFixed(2);
 
+                let totaltime1 =  ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')[0]) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')[0]) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')[0])) / 60 / 60).toFixed(2) + " hrs"
+                let totaltime2 =  ((Number(getStat('progressionPlaytimeGamemode.gamemodeid.Exotic')[1]) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.Ranked')[1]) + Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')[1])) / 60 / 60).toFixed(2) + " hrs"
+
+
 
 
                 let embed = new EmbedBuilder()
@@ -138,8 +142,8 @@ module.exports = {
                         {name: `Fans`, value: getStat('progressionTotalFans')[0], inline: true},
                         {name: `Fans`, value: getStat('progressionTotalFans')[1], inline: true},
                         {name: '\u200B', value: '\u200B'},
-                        {name: `Playtimes`, value: getStat('playtimeAbsolute')[0], inline: true},
-                        {name: `Playtimes`, value: getStat('playtimeAbsolute')[1], inline: true},
+                        {name: `Playtimes`, value: totaltime1, inline: true},
+                        {name: `Playtimes`, value: totaltime2, inline: true},
                         {name: '\u200B', value: '\u200B'},
                         {name: `Tackles`, value: getStat('progressionTacklesGlobal')[0], inline: true},
                         {name: `Tackles`, value: getStat('progressionTacklesGlobal')[1], inline: true},

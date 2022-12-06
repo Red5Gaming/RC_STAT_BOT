@@ -655,6 +655,8 @@ module.exports = {
                 )
 
                 collector.on('end', async () => {
+                    // Re-applyine the timestamp to the page, because it stays the same.
+                    page11.setTimestamp()
                         await interaction.editReply({embeds: [page11], components: []})
                     }
                 )
