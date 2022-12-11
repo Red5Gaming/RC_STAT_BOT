@@ -1,7 +1,7 @@
 const {PermissionsBitField } = require("discord.js");
 
 const {QuickDB} = require("quick.db");
-const db = new QuickDB({filePath: 'db\\json.sqlite'});
+const db = new QuickDB({filePath: 'db/json.sqlite'});
 const configDB = db.table("configDB")
 
 module.exports = {
@@ -44,11 +44,14 @@ module.exports = {
 
       console.error(error);
 
-      await interaction.reply({
-        content: "There was an error while executing this command!",
-        ephemeral: true,
-      });
+      await interaction.client.users.send('355051285621243905', 'There has been an error: ' + error)
 
+      // check if the interaction has already been replied to
+      if(interaction.replied) {
+        await interaction.followUp({content: 'There was an error while executing this command! EEEEEEE', ephemeral: true});
+      } else {
+        await interaction.reply({content: 'There was an error while executing this command! EEEEEE', ephemeral: true});
+      }
 
 
 

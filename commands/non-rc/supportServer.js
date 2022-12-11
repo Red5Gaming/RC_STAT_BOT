@@ -10,7 +10,7 @@ module.exports = {
     ,
     async execute(interaction) {
 
-        // await interaction.deferReply()
+        await interaction.deferReply()
 
         const answerembed = new EmbedBuilder()
             .setTitle('Support server')
@@ -30,7 +30,7 @@ module.exports = {
 
 
 
-         await interaction.reply({embeds: [answerembed], components: [button], ephemeral: true})
+         await interaction.editReply({embeds: [answerembed], components: [button], ephemeral: true})
 
 
 

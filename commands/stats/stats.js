@@ -84,7 +84,6 @@ module.exports = {
                     timeQuickMatch: (Number(getStat('progressionPlaytimeGamemode.gamemodeid.QuickMatch')) / 60 / 60).toFixed(2).toString() + " hrs"
                 }
 
-
                 // dodges
                 let dodges = {
                     dodges: getStat('performanceDodge'),
@@ -111,7 +110,6 @@ module.exports = {
                     gatesinranked: getStat('performanceGatesGamemode.gamemodeid.Ranked'),
                     calculatedgates: addStats('performanceGatesGamemode.gamemodeid.Exotic', 'performanceGatesGamemode.gamemodeid.QuickMatch', 'performanceGatesGamemode.gamemodeid.Ranked')
                 }
-
 
                 // all goals
                 let allGoals = {
@@ -196,7 +194,6 @@ module.exports = {
                     calculateddistance: (addStats('performanceDistanceGamemode.gamemodeid.Exotic', 'performanceDistanceGamemode.gamemodeid.QuickMatch', 'performanceDistanceGamemode.gamemodeid.Ranked') / 1000).toFixed(2) + " km"
                 }
 
-
                 // 1 / 0 stats
                 let onezerostats = {
                     onetozeroexotic: getStat('progressionEndOfMatchEnemyScore.gamemodeid.Exotic.selfscore.1.otherscore.0'),
@@ -220,7 +217,6 @@ module.exports = {
                     statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
                     venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
                 }
-
 
                 // minute wins in quickmatch
                 let minutewins = {
@@ -253,11 +249,6 @@ module.exports = {
                     calculatedlosses: (Number(getStat('MatchPlayed')) - Number(getStat('MatchResult.endreason.Win')) - Number(getStat('MatchResult.endreason.Draw'))).toString()
                 }
 
-
-//             console.log(typeof matchesStats.winpercentage)
-// console.log(matchesStats.winpercentage)
-
-
                 // exotic outcomes
                 let exoticOutcomes = {
                     exoticDraws: getStat('MatchResultGamemode.gamemode.Exotic.endreason.Draw'),
@@ -279,12 +270,10 @@ module.exports = {
                 // mmr
                 let mmr = getStat('tsrmeandef')
 
-
                 // cosmetics
                 let cosmeticAmount = getStat('progressionCollection')
 
 
-                // every page is 3x4 fields
                 const page1 = new EmbedBuilder()
                     .setTitle('Important Stats')
                     .addFields({name: "MMR", value: mmr, inline: true},
@@ -577,6 +566,19 @@ module.exports = {
 
 
                 let pages = [page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
+                let pagedescriptions = [
+                    // This array is used to store the descriptions of the pages
+                    'The most important stats',
+                    'Stats for the ranked mode',
+                    'Stats for the quickmatch mode',
+                    'Stats for the exotic modes',
+                    'Stats about times',
+                    'Stats about distances',
+                    'Stats about grabs, dodges, tackles, stuns and emotes',
+                    'Stats about goals, gates and percentages',
+                    'Stats without a clear category',
+                    'Stats for the individual maps',
+                ]
 
                 // Adding attributes to the pages so I dont have to add them one by one
                 pages.forEach(page => {
@@ -599,15 +601,21 @@ module.exports = {
                     pageTitles.push(page.data.title)
                 })
 
+
                 // Adding the page labels and their index to an object
                 let pageoptions = []
                 for (let i = 0; i < pages.length; i++) {
-                    pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`})
+                    pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`, description: `${pagedescriptions[i]}`})
                 }
 
                 const selectmenu = new ActionRowBuilder()
                     .addComponents(
-                        new StringSelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
+                        new StringSelectMenuBuilder()
+                            .setCustomId('selectmenu')
+                            .setPlaceholder('Select a page')
+                            .addOptions(pageoptions)
+                    );
+
 
                 await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})
 

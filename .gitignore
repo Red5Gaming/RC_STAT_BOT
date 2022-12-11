@@ -122,3 +122,4 @@ node_modules
 
 db/json.sqlite
 *.tar
+icons/

@@ -3,8 +3,9 @@ const {SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits} = require('discor
 
 
 const {QuickDB} = require("quick.db");
+const {throws} = require("assert");
 // const db = new QuickDB();
-const db = new QuickDB({filePath: 'db\\json.sqlite'});
+const db = new QuickDB({filePath: 'db/json.sqlite'});
 const configDB = db.table("configDB")
 
 
@@ -112,6 +113,7 @@ module.exports = {
         }
 
         await interaction.editReply({embeds: [answerembed], ephemeral: false})
+
 
 
     }

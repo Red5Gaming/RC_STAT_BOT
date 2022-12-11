@@ -1,8 +1,13 @@
+const fs = require("fs");
+
+
 module.exports = {
     name: 'ready',
     once: true,
     execute(client) {
         console.log(`Ready! Logged in as ${client.user.tag}`);
+
+
 
 let allusers = 0;
         client.shard
@@ -28,6 +33,10 @@ let allusers = 0;
                 // format the results with each server name on a new line, with replacing the comma with a new line and a - in front of it
                 return console.log(`- ${results.map(r => r.join('\n- '))}`);
             })
+
+
+
+
 
 
 

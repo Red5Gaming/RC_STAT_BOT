@@ -6,7 +6,6 @@ const {
 } = require('discord.js');
 
 
-
 const req = require('../../utils/requestHandler.js').stat
 
 module.exports = {
@@ -568,6 +567,19 @@ module.exports = {
 
 
                 let pages = [page1, page2, page3, page4, page5, page6, page7, page8, page9, page10]
+                let pagedescriptions = [
+                    // This array is used to store the descriptions of the pages
+                    'The most important stats',
+                    'Stats for the ranked mode',
+                    'Stats for the quickmatch mode',
+                    'Stats for the exotic modes',
+                    'Stats about times',
+                    'Stats about distances',
+                    'Stats about grabs, dodges, tackles, stuns and emotes',
+                    'Stats about goals, gates and percentages',
+                    'Stats without a clear category',
+                    'Stats for the individual maps',
+                    ]
 
                 pages.forEach(page => {
                     page.setColor('#FF1653')
@@ -591,13 +603,18 @@ module.exports = {
 
                 let pageoptions = []
                 for (let i = 0; i < pages.length; i++) {
-                    pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`})
+                    pageoptions.push({label: `${pageTitles[i]}`, value: `${i}`, description: `${pagedescriptions[i]}`})
                 }
 
 
                 const selectmenu = new ActionRowBuilder()
                     .addComponents(
-                        new StringSelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
+                        // new StringSelectMenuBuilder().setCustomId('selectmenu').setPlaceholder('Select a page').addOptions(pageoptions).setPlaceholder('Select a page'));
+                    new StringSelectMenuBuilder()
+                        .setPlaceholder('Select a page')
+                        .addOptions(pageoptions)
+                        .setCustomId('selectmenu')
+                    )
 
 
                 await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})

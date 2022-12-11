@@ -1,17 +1,17 @@
 FROM node:latest
 
 
-RUN mkdir -p /usr/src/bot
+RUN mkdir -p /app
 
-WORKDIR /usr/src/bot
+WORKDIR /app
 
 
-COPY package.json /usr/src/bot
+COPY package.json /app
 
 RUN npm install
 
 
-COPY . /usr/src/bot
-
+COPY . /app
+RUN rm -rf /app/db/
 
 CMD ["node", "index.js"]

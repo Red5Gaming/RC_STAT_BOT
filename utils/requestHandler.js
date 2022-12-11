@@ -3,7 +3,7 @@ const config = require("../config.json");
 const superagent = require("superagent");
 
 const {QuickDB} = require("quick.db");
-const db = new QuickDB({filePath: '.\\db\\json.sqlite'});
+const db = new QuickDB({filePath: 'db/json.sqlite'});
 const requestDb = db.table("requests");
 const fs = require("fs");
 
