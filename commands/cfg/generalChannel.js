@@ -16,15 +16,23 @@ module.exports = {
         .setDescription('Limits the stat command to specific channels.')
         .setDMPermission(false)
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+
         .addSubcommand(subcommand => subcommand
             .setName('add')
             .setDescription('Adds a channel to the list.')
-            .addChannelOption(option => option.setName('channel').setDescription('The channel to add to the list.').setRequired(true))
+            .addChannelOption(option =>
+                option.setName('channel')
+                    .setDescription('The channel to add to the list.')
+                    .setRequired(true))
+            
         )
         .addSubcommand(subcommand => subcommand
             .setName('remove')
             .setDescription('Removes a channel from the list.')
-            .addChannelOption(option => option.setName('channel').setDescription('The channel to remove from the list.').setRequired(true))
+            .addChannelOption(option =>
+                option.setName('channel')
+                    .setDescription('The channel to remove from the list.')
+                    .setRequired(true))
         )
         .addSubcommand(subcommand => subcommand
             .setName('list')

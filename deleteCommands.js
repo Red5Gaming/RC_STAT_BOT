@@ -12,6 +12,6 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 
 // for global commands
-rest.delete(Routes.applicationCommand(clientId, '1035968418702164109'))
+rest.delete(Routes.applicationCommand(clientId, '1052667247916757202'))
     .then(() => console.log('Successfully deleted application command'))
     .catch(console.error);

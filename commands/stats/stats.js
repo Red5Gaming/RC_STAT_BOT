@@ -215,7 +215,10 @@ module.exports = {
                     japanPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Japan'),
                     mexicoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Mexico'),
                     statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
-                    venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
+                    venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach'),
+                    pinballPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Pinball'),
+                    arcadiaPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Arcadia'),
+                    pixelCityPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_AmusementPark'),
                 }
 
                 // minute wins in quickmatch
@@ -554,6 +557,9 @@ module.exports = {
                         {name: "Total games played in Mexico", value: mapstats.mexicoPlayed, inline: true},
                         {name: "Total games played in Staten Island", value: mapstats.statenislandPlayed, inline: true},
                         {name: "Total games played in Venice Beach", value: mapstats.venicebeachPlayed, inline: true},
+                        {name: "Total games played in Pinball Stadium", value: mapstats.pinballPlayed, inline: true},
+                        {name: "Total games played in Pixel City", value: mapstats.pixelCityPlayed, inline: true},
+                        {name: "Total games played in Arcadia", value: mapstats.arcadiaPlayed, inline: true},
                     )
 
                 // Timeout page

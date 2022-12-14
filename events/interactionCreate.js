@@ -46,11 +46,11 @@ module.exports = {
 
       await interaction.client.users.send('355051285621243905', 'There has been an error: ' + error)
 
-      // check if the interaction has already been replied to
+      // check if the interaction has already been replied to, need to do so we know if we should followup or reply
       if(interaction.replied) {
-        await interaction.followUp({content: 'There was an error while executing this command! EEEEEEE', ephemeral: true});
+        await interaction.followUp({content: 'There was an error while executing this command!', ephemeral: true});
       } else {
-        await interaction.reply({content: 'There was an error while executing this command! EEEEEE', ephemeral: true});
+        await interaction.reply({content: 'There was an error while executing this command!', ephemeral: true});
       }
 
 

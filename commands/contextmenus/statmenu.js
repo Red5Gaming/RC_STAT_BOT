@@ -2,7 +2,7 @@ const {
     EmbedBuilder,
     ButtonStyle,
     ContextMenuCommandBuilder,
-    ApplicationCommandType, ActionRowBuilder, ButtonBuilder, SelectMenuBuilder, StringSelectMenuBuilder
+    ApplicationCommandType, ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder
 } = require('discord.js');
 
 
@@ -208,7 +208,11 @@ module.exports = {
                     japanPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Japan'),
                     mexicoPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Mexico'),
                     statenislandPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_StatenIsland'),
-                    venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach')
+                    venicebeachPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_VeniceBeach'),
+                    pinballPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Pinball'),
+                    arcadiaPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_Arcadia'),
+                    pixelCityPlayed: getStat('progressionEnvironmentPlayedSpecific.map.Arena_AmusementPark')
+
                 }
 
 
@@ -555,6 +559,9 @@ module.exports = {
                         {name: "Total games played in Mexico", value: mapstats.mexicoPlayed, inline: true},
                         {name: "Total games played in Staten Island", value: mapstats.statenislandPlayed, inline: true},
                         {name: "Total games played in Venice Beach", value: mapstats.venicebeachPlayed, inline: true},
+                        {name: "Total games played in Pinball Stadium", value: mapstats.pinballPlayed, inline: true},
+            {name: "Total games played in Pixel City", value: mapstats.pixelCityPlayed, inline: true},
+            {name: "Total games played in Arcadia", value: mapstats.arcadiaPlayed, inline: true},
                     )
 
                 const page11 = new EmbedBuilder()
