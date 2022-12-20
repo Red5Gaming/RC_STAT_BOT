@@ -199,6 +199,36 @@ async function returnStatObject(name, platform) {
     }
 }
 
-module.exports.stat = returnStatObject;
-module.exports.profId = returnProfileId;
-module.exports.checkIfUserExists = checkIfUserExists;
+async function getLatestPatchNotes() {
+    let newsUrl = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2211280&count=3&maxlength=655&format=json"
+    let patchnotes = await superagent.get(newsUrl)
+    return patchnotes.body.appnews.newsitems[0].contents
+}
+
+async function getLatestPatchLink() {
+    let newsUrl = "http://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid=2211280&count=3&maxlength=655&format=json"
+    let patchnotes = await superagent.get(newsUrl)
+    return patchnotes.body.appnews.newsitems[0].url
+}
+
+async function getSteamPlayerbase() {
+    const headers = {
+        "Client-ID": "F07D7ED5C43A695B3EBB01C28B6A18E5",
+    }
+
+    let url ="https://api.steampowered.com/ISteamUserStats/GetNumberOfCurrentPlayers/v1/?format=json&appid=2211280"
+
+    let playerbase = await superagent.get(url)
+        .set(headers)
+    return playerbase.body.response.player_count
+}
+
+
+module.exports = {
+    stat: returnStatObject,
+    profId: returnProfileId,
+    checkIfUserExists: checkIfUserExists,
+    getLatestPatchNotes: getLatestPatchNotes,
+    getSteamPlayerbase: getSteamPlayerbase,
+    getLatestPatchLink: getLatestPatchLink
+}

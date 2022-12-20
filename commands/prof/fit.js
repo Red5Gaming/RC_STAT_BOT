@@ -1,7 +1,7 @@
 const {SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 
-const req = require('../../utils/requestHandler.js').profId
-const usercheck = require('../../utils/requestHandler.js').checkIfUserExists
+
+const reqHandler = require('../../utils/requestHandler.js')
 
 
 module.exports = {
@@ -24,11 +24,11 @@ module.exports = {
     ,
     async execute(interaction) {
 
-        if(await usercheck(interaction.options.getString('name'), interaction.options.getString('platform')) === false) { // check if the user exists
+        if(await reqHandler.checkIfUserExists(interaction.options.getString('name'), interaction.options.getString('platform')) === false) { // check if the user exists
             await interaction.reply({content: 'This user seems to not have a profile.', ephemeral: true})
         } else { // if the user exists
 
-            let profileId = await req(interaction.options.getString('name'), interaction.options.getString('platform'))
+            let profileId = await reqHandler.profId(interaction.options.getString('name'), interaction.options.getString('platform'))
             console.log(profileId)
 
             let fitScreenUrl = `https://roller-prod-screenshot.s3.amazonaws.com/20d5c466-84fe-4f1e-8625-f6a4e2319edf/${profileId}.jpg`

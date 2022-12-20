@@ -8,7 +8,7 @@ const {
 } = require('discord.js');
 
 
-const req = require('../../utils/requestHandler.js').stat
+const requestHandler = require('../../utils/requestHandler.js')
 
 
 module.exports = {
@@ -69,8 +69,8 @@ module.exports = {
 
 
 
-        let stato = await req(name1, platform1);
-        let stato2 = await req(name2, platform2);
+        let stato = await requestHandler.stat(name1, platform1);
+        let stato2 = await requestHandler.stat(name2, platform2);
 
 
 

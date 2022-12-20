@@ -13,11 +13,11 @@ for (const folder of commandFolders) {
         .filter((file) => file.endsWith(".js"));
 
     for (const file of commandFiles) {
-        // check if the file is named "dev-stats.js"
-        if (file === "dev-stats.js") {
+
+
             const command = require(`./commands/${folder}/${file}`);
             commands.push(command.data.toJSON());
-        }
+
 
     }
 }

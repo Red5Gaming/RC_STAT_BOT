@@ -9,7 +9,7 @@ const {
 } = require('discord.js');
 
 
-const req = require('../../utils/requestHandler.js').stat
+const reqHandler = require('../../utils/requestHandler.js')
 
 
 module.exports = {
@@ -45,7 +45,7 @@ module.exports = {
         if (platform === 'xbl') platformEdit = 'Xbox';
         // if(platform == 'switch') platformEdit = 'Nintendo Switch'; //Not working currently
 
-        let stato = await req(name, platform);
+        let stato = await reqHandler.stat(name, platform);
 
         if (stato === undefined) { // case if the user does not exist
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})

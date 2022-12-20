@@ -6,7 +6,8 @@ const {
 } = require('discord.js');
 
 
-const req = require('../../utils/requestHandler.js').stat
+const reqHandler = require('../../utils/requestHandler.js')
+
 
 module.exports = {
     data: new ContextMenuCommandBuilder()
@@ -22,7 +23,7 @@ module.exports = {
         const name = interaction.targetUser.username
         const platform = "uplay";
 
-        let stato = await req(name, platform);
+        let stato = await reqHandler.stat(name, platform);
 
         if (stato === undefined) {
             await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
