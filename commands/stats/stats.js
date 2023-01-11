@@ -595,10 +595,10 @@ module.exports = {
 
                 const buttons = new ActionRowBuilder()
                     .addComponents(
-                        new ButtonBuilder().setCustomId('first').setStyle(ButtonStyle.Secondary).setEmoji('⏪'),
-                        new ButtonBuilder().setCustomId('previous').setStyle(ButtonStyle.Danger).setEmoji('⬅'),
-                        new ButtonBuilder().setCustomId('next').setStyle(ButtonStyle.Success).setEmoji('➡'),
-                        new ButtonBuilder().setCustomId('last').setStyle(ButtonStyle.Secondary).setEmoji('⏩'),
+                        new ButtonBuilder().setCustomId('first' + interaction.user.id).setStyle(ButtonStyle.Secondary).setEmoji('⏪'),
+                        new ButtonBuilder().setCustomId('previous' + interaction.user.id).setStyle(ButtonStyle.Danger).setEmoji('⬅'),
+                        new ButtonBuilder().setCustomId('next' + interaction.user.id).setStyle(ButtonStyle.Success).setEmoji('➡'),
+                        new ButtonBuilder().setCustomId('last' + interaction.user.id).setStyle(ButtonStyle.Secondary).setEmoji('⏩'),
                     )
 
                 // Array with all page titles
@@ -617,7 +617,7 @@ module.exports = {
                 const selectmenu = new ActionRowBuilder()
                     .addComponents(
                         new StringSelectMenuBuilder()
-                            .setCustomId('selectmenu')
+                            .setCustomId('selectmenu' + interaction.user.id)
                             .setPlaceholder('Select a page')
                             .addOptions(pageoptions)
                     );
@@ -625,7 +625,7 @@ module.exports = {
 
                 await interaction.editReply({embeds: [page1], components: [selectmenu, buttons]})
 
-                const filter = (i) => i.customId === 'first' || i.customId === 'previous' || i.customId === 'next' || i.customId === 'last' || i.customId === 'selectmenu' && i.user.id === interaction.user.id
+                const filter = (i) => i.customId === 'first' + interaction.user.id || i.customId === 'previous' + interaction.user.id || i.customId === 'next' + interaction.user.id || i.customId === 'last' + interaction.user.id || i.customId === 'selectmenu' + interaction.user.id && i.user.id === interaction.user.id
                 const collector = interaction.channel.createMessageComponentCollector({filter, time: 300000}) // def. 300000
 
                 let currentPage = 0
@@ -637,10 +637,10 @@ module.exports = {
                         })
                         else { // case if the user clicks the button
 
-                            if (i.customId === 'first') { // case if the user clicks the first button
+                            if (i.customId === 'first' + interaction.user.id) { // case if the user clicks the first button
                                 currentPage = 0
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else if (i.customId === 'previous') { // case if the user clicks the previous button
+                            } else if (i.customId === 'previous' + interaction.user.id) { // case if the user clicks the previous button
                                 if (currentPage !== 0) {
                                     --currentPage
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
@@ -648,7 +648,7 @@ module.exports = {
                                     currentPage = pages.length - 1
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                                 }
-                            } else if (i.customId === 'next') { // case if the user clicks the next button
+                            } else if (i.customId === 'next' + interaction.user.id) { // case if the user clicks the next button
                                 if (currentPage < pages.length - 1) {
                                     ++currentPage
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
@@ -656,10 +656,10 @@ module.exports = {
                                     currentPage = 0
                                     await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                                 }
-                            } else if (i.customId === 'last') { // case if the user clicks the last button
+                            } else if (i.customId === 'last' + interaction.user.id) { // case if the user clicks the last button
                                 currentPage = pages.length - 1
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
-                            } else if (i.customId === 'selectmenu') { // case if the user clicks the select menu
+                            } else if (i.customId === 'selectmenu' + interaction.user.id) { // case if the user clicks the select menu
                                 currentPage = i.values[0]
                                 await i.update({embeds: [pages[currentPage]], components: [selectmenu, buttons]})
                             }
@@ -667,6 +667,7 @@ module.exports = {
 
                     }
                 )
+
 
                 collector.on('end', async () => {
                     // Re-applyine the timestamp to the page, because it stays the same.

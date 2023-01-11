@@ -51,7 +51,7 @@ module.exports = {
 
             if (getStat('playtimeAbsolute') === '0') {
                 await interaction.editReply({content: 'This user seems to not have a profile.', ephemeral: true})
-                console.log("User has 0 hours")
+                //console.log("User has 0 hours")
             } else {
 
 

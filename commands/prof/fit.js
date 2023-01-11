@@ -43,7 +43,7 @@ module.exports = {
                 .setTimestamp()
                 .setFooter({text: 'Requested by ' + interaction.user.username, iconURL: botpfp})
 
-            await interaction.reply({embeds: [fitEmbed], ephemeral: true})
+            await interaction.reply({embeds: [fitEmbed], ephemeral: false})
 
 
         }

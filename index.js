@@ -3,6 +3,7 @@ const { token } = require("./config.json");
 
 const manager = new ShardingManager("./bot.js", {
   token: token,
+  totalShards: 10
 });
 
 manager.on("shardCreate", (shard) => console.log(`Launched shard ${shard.id}`));

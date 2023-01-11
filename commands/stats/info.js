@@ -40,6 +40,13 @@ module.exports = {
             })
             .setColor('#FF1653')
 
+
+        await console.dir(page0)
+
+
+
+
+
         await interaction.editReply({embeds: [page0], ephemeral: false})
 
     }

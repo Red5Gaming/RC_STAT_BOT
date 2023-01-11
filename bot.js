@@ -52,4 +52,4 @@ for (const file of eventFiles) {
   }
 }
 
-client.login(devToken);
+client.login(token)
